@@ -22,7 +22,7 @@ builder.Services.AddDbContext<ApiContext>(options =>
             {
                 users.Add(new User
                 {
-                   Name =  $"user{i}",
+                   Username =  $"user{i}",
                    Password = $"pass{i}",
                    Email = $"mail{i}@gmail.com"
                 });
@@ -39,7 +39,7 @@ builder.Services.AddDbContext<ApiContext>(options =>
             {
                 users.Add(new User
                 {
-                   Name =  $"user{i}",
+                   Username =  $"user{i}",
                    Password = $"pass{i}",
                    Email = $"mail{i}@gmail.com"
                 });

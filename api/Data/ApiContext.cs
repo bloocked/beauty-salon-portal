@@ -13,8 +13,10 @@ public class ApiContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasIndex(u => new { u.Email, u.Name })
+        modelBuilder.Entity<User>(u =>
+        {
+            u.HasIndex(u => new { u.Email, u.Username })
             .IsUnique();
+        });
     }
 }

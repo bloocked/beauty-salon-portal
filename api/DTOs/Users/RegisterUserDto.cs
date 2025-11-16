@@ -1,14 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Models;
+namespace api.DTOs.Users;
 
-public class User
+public class RegisterUserDto
 {
-    public int Id { get; set; }
     [Required]
     public required string Username { get; set; }
     [Required]
-    public required string Password { get; set; } //hash this eventually
+    public required string Password { get; set; }
     [Required]
     public required string Email { get; set; }
 } 
