@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly ApiContext _context;
@@ -15,14 +15,14 @@ public class UsersController : ControllerBase
         _context = context;
     }
 
-    // GET: /users
+    // GET: api/users
     [HttpGet]
     public async Task<List<User>> GetUsers()
     {
         return await _context.Users.ToListAsync();
     }
 
-    // GET: /user/{id}
+    // GET: api/users/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
@@ -33,9 +33,20 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
+    // POST: api/users
     [HttpPost]
     public async Task<ActionResult<User>> PostUser(User user)
     {
+        if (await _context.Users.AnyAsync(u => u.Email == user.Email))
+        {
+            return BadRequest("Email already exists");
+        }
+
+        if (await _context.Users.AnyAsync(u => u.Name == user.Name))
+        {
+            return BadRequest("Username is taken");
+        }
+        
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 

@@ -73,3 +73,6 @@ C:\Users\kipra\OneDrive - Kaunas University of Technology\3kursas_5semestras\Tin
 C:\Users\kipra\OneDrive - Kaunas University of Technology\3kursas_5semestras\Tinklai\IT\salonu_portalas_net\api\bin\Debug\net9.0\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\kipra\OneDrive - Kaunas University of Technology\3kursas_5semestras\Tinklai\IT\salonu_portalas_net\api\bin\Debug\net9.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\kipra\OneDrive - Kaunas University of Technology\3kursas_5semestras\Tinklai\IT\salonu_portalas_net\api\bin\Debug\net9.0\runtimes\win-x86\native\e_sqlite3.dll
+C:\Users\kipra\OneDrive - Kaunas University of Technology\3kursas_5semestras\Tinklai\IT\salonu_portalas_net\api\bin\Debug\net9.0\api.staticwebassets.runtime.json
+C:\Users\kipra\OneDrive - Kaunas University of Technology\3kursas_5semestras\Tinklai\IT\salonu_portalas_net\api\obj\Debug\net9.0\compressed\5hz7yazoko-7ivhldosf5.gz
+C:\Users\kipra\OneDrive - Kaunas University of Technology\3kursas_5semestras\Tinklai\IT\salonu_portalas_net\api\obj\Debug\net9.0\compressed\1whhkpimtf-dph5ardehx.gz

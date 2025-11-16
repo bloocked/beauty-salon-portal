@@ -66,6 +66,10 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//this is for wwwroot
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
