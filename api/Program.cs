@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using api.Models;
 using api.Data;
-using Microsoft.Extensions.Options;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApiContext>(options => 
     options.UseSqlite("Data Source=dbase.db")
-    .UseSeeding((context, _ ) =>
+    .UseSeeding((context, _) =>
     {
         var users = context.Set<User>();
         if (!users.Any())

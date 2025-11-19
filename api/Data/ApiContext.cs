@@ -15,7 +15,7 @@ public class ApiContext : DbContext
     {
         modelBuilder.Entity<User>(u =>
         {
-            u.HasIndex(u => new { u.Email, u.Username })
+            u.HasIndex(u => new { u.Email, u.Username }) //seperate 
             .IsUnique();
         });
     }

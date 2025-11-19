@@ -17,11 +17,17 @@ public class UsersController : ControllerBase
         _context = context;
     }
 
+    //currently not using dtos since its mostly for testing
+    //if there is a need to keep, will sanitize
     // GET: api/users
     [HttpGet]
-    public async Task<List<User>> GetUsers()
+    public async Task<ActionResult<List<User>>> GetUsers()
     {
-        return await _context.Users.ToListAsync();
+        var users = await _context.Users.ToListAsync();
+    
+        if (!users.Any()) return NotFound("Users list is empty");
+
+        return Ok(users);
     }
 
     // GET: api/users/{id}

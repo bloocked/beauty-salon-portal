@@ -4,23 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>HTML 5 Boilerplate</title>
+    <title>Home</title>
     <link rel="stylesheet" href="style.css">
-    <script src="js/register.js" defer></script>
   </head>
   <body>
-    <h1>Demo Register</h1>
-    <form id="registerForm">
-      <label for="email">Email:</label><br>
-      <input type="text" id="email" name="Email"><br>
+    <nav>
+      <ul>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </nav>
 
-      <label for="username">Username:</label><br>
-      <input type="text" id="username" name="Username"><br>
+    <h3>Search for a salon:</h3>
+    <select name="Services" id="services">
+      <option value="">Select a service</option>
+      <!--fetch services and populate dropdown-->
+    </select>
+    
+    <select name="Cities" id="cities">
+      <option value="">Select a city</option>
+      <!--do the same for cities, but fetch default from client entity-->
+    </select>
 
-      <label for="pword">Password:</label><br>
-      <input type="text" id="password" name="Password"><br>
-
-      <button type="submit">Submit</button>
-    </form>
+    <button id="searchBtn">Search</button>
   </body>
 </html>
