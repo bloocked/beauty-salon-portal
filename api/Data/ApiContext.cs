@@ -10,13 +10,24 @@ public class ApiContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Salon> Salons { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>(u =>
         {
-            u.HasIndex(u => new { u.Email, u.Username }) //seperate 
-            .IsUnique();
+            u.HasIndex(u => u.Email)
+                .IsUnique();
+            u.HasIndex(u => u.Username)
+                .IsUnique();
+        });
+
+        modelBuilder.Entity<Salon>(s =>
+        {
+            s.HasIndex(s => s.Name)
+                .IsUnique();
+            s.HasIndex(s => s.Address)
+                .IsUnique();
         });
     }
 }
