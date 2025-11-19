@@ -1,3 +1,5 @@
+using api.Enums;
+
 namespace api.Models;
 
 public class User
@@ -6,4 +8,5 @@ public class User
     public required string Username { get; set; }
     public required string Password { get; set; } //hash this eventually
     public required string Email { get; set; }
+    public City? City { get; set; }
 } 
