@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.DTOs.Users;
 
-public class ResponseUserDto
+public class UserGetDto
 {
     [Required]
     public int Id { get; set; }

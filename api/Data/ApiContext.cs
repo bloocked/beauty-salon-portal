@@ -1,3 +1,4 @@
+using api.Enums;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,10 @@ public class ApiContext : DbContext
                 .IsUnique();
             s.HasIndex(s => s.Address)
                 .IsUnique();
+            s.Property(s => s.City)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => Enum.Parse<City>(v));
         });
     }
 }

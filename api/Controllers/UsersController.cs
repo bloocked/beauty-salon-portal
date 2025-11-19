@@ -24,7 +24,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<List<User>>> GetUsers()
     {
         var users = await _context.Users.ToListAsync();
-    
+
         if (!users.Any()) return NotFound("Users list is empty");
 
         return Ok(users);
@@ -35,10 +35,10 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetUser(int id)
     {
         var result = await _context.Users.FindAsync(id);
-        
-        if(result == null) return NotFound();
 
-        var responseUser = new ResponseUserDto
+        if (result == null) return NotFound();
+
+        var responseUser = new UserGetDto
         {
             Id = result.Id,
             Username = result.Username,
@@ -50,7 +50,7 @@ public class UsersController : ControllerBase
 
     // POST: api/users
     [HttpPost]
-    public async Task<ActionResult<User>> PostUser(RegisterUserDto userDto)
+    public async Task<ActionResult<User>> PostUser(UserCreateDto userDto)
     {
         if (await _context.Users.AnyAsync(u => u.Email == userDto.Email))
         {
@@ -61,19 +61,25 @@ public class UsersController : ControllerBase
         {
             return BadRequest("Username is taken");
         }
-        
-        var user = new User
+
+        var User = new User
         {
             Username = userDto.Username,
             Password = userDto.Password,
             Email = userDto.Email
         };
 
-        _context.Users.Add(user);
+        _context.Users.Add(User);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetUser),
-        new { id = user.Id },
-        new { username = user.Username});
+        return CreatedAtAction(
+        nameof(GetUser),
+        new { id = User.Id },
+        new UserGetDto
+        {
+            Id = User.Id,
+            Username = User.Username,
+            Email = User.Email
+        });
     }
 }

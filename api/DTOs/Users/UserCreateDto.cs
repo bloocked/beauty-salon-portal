@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.DTOs.Users;
 
-public class RegisterUserDto
+public class UserCreateDto
 {
     [Required]
     public required string Username { get; set; }
