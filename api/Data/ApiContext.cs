@@ -12,6 +12,7 @@ public class ApiContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Salon> Salons { get; set; }
+    public DbSet<Specialist> Specialists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

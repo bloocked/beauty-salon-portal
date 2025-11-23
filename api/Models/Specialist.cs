@@ -7,4 +7,5 @@ public class Specialist
 
     // navigation properties
     public required User User { get; set; }
+    public required Salon Salon { get; set; }
 }

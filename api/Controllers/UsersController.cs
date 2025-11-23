@@ -25,7 +25,7 @@ public class UsersController : ControllerBase
     {
         var users = await _context.Users.ToListAsync();
 
-        if (!users.Any()) return NotFound("Users list is empty");
+        if (users.Count == 0) return NotFound("Users list is empty");
 
         return Ok(users);
     }
