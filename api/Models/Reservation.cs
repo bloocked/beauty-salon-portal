@@ -1,14 +1,15 @@
 namespace api.Models;
 
-public class SpecialistService
+public class Reservation
 {
     public int Id { get; set; }
     public int SpecialistId { get; set; }
+    public int UserId { get; set; }
     public int ServiceId { get; set; }
-    public required double Cost { get; set; }
-    public required TimeSpan Duration { get; set; }
+    public DateTime StartTime { get; set; }
 
     // navigation properties
-    public Service Service { get; set;} = null!;
+
     public Specialist Specialist { get; set; } = null!;
+    public User Client { get; set; } = null!;
 }

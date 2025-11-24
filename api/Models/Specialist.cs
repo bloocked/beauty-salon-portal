@@ -4,6 +4,7 @@ namespace api.Models;
 
 public class Specialist
 {
+    public int Id { get; set; }
     public int UserId { get; set; } 
     public int SalonId { get; set; }
 
