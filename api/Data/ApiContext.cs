@@ -15,6 +15,7 @@ public class ApiContext : DbContext
     public DbSet<Specialist> Specialists { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<SpecialistService> SpecialistServices { get; set; }
+    public DbSet<Reservation> Reservations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
