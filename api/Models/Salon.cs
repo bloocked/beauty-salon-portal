@@ -10,4 +10,6 @@ public class Salon
     public required string Address { get; set; }
     public string? Image { get; set; }
 
+    // navigation properties
+    public ICollection<Specialist> Specialists = new List<Specialist>();
 }

@@ -1,11 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace api.Models;
 
 public class Specialist
 {
-    public int Fk_UserId { get; set; } 
-    public int Fk_SalonId { get; set; }
+    public int UserId { get; set; } 
+    public int SalonId { get; set; }
 
     // navigation properties
-    public required User User { get; set; }
-    public required Salon Salon { get; set; }
+    public User User { get; set; } = null!;
+    public Salon Salon { get; set; } = null!;
+    public ICollection<SpecialistService> Services { get; } = new List<SpecialistService>();
 }

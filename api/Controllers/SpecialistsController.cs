@@ -36,13 +36,13 @@ public class SpecialistsController : ControllerBase
         var result = await _context.Specialists
         .Include(s => s.User)
         .Include(s => s.Salon)
-        .FirstOrDefaultAsync(s => s.Fk_UserId == id);
+        .FirstOrDefaultAsync(s => s.UserId == id);
 
         if (result == null) return NotFound();
 
         var responseUser = new SpecialistGetDto
         {
-            UserId = result.Fk_UserId,
+            UserId = result.UserId,
             Name = result.User.Username,
             Email = result.User.Email,
             SalonName = result.Salon.Name
