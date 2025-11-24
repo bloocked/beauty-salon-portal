@@ -11,4 +11,5 @@ public class SpecialistService
     // navigation properties
     public Service Service { get; set;} = null!;
     public Specialist Specialist { get; set; } = null!;
+    public ICollection<Reservation> Reservations { get; } = new List<Reservation>();
 }

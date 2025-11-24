@@ -12,4 +12,5 @@ public class User
 
     //optional navigation properties
     public Specialist? Specialist { get; set; }
+    public ICollection<Reservation> Reservations = new List<Reservation>();
 } 

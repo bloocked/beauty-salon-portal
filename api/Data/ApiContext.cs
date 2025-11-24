@@ -1,7 +1,6 @@
 using api.Enums;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
-using Namotion.Reflection;
 
 namespace api.Data;
 
@@ -62,12 +61,26 @@ public class ApiContext : DbContext
         modelBuilder.Entity<SpecialistService>(s =>
         {
             s.HasOne(ss => ss.Service)
-                .WithOne(s => s.SpecialistService)
-                .HasForeignKey<SpecialistService>(ss => ss.ServiceId);
+                .WithMany(s => s.SpecialistServices)
+                .HasForeignKey(ss => ss.ServiceId);
 
             s.HasOne(ss => ss.Specialist)
-                .WithMany(s => s.Services)
+                .WithMany(s => s.SpecialistServices)
                 .HasForeignKey(ss => ss.SpecialistId);
         });
+
+       modelBuilder.Entity<Reservation>(r =>
+       {
+            r.HasIndex(r => new { r.StartTime, r.SpecialistServiceId })
+                .IsUnique();
+
+            r.HasOne(r => r.SpecialistService)
+                .WithMany(ss => ss.Reservations)
+                .HasForeignKey(ss => ss.SpecialistServiceId);
+
+            r.HasOne(r => r.Client)
+                .WithMany(c => c.Reservations)
+                .HasForeignKey(r => r.UserId);
+       });
     }
 }

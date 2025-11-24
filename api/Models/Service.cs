@@ -6,5 +6,5 @@ public class Service
     public required string Name { get; set; }
 
     //navigation properties
-    public SpecialistService SpecialistService { get; set; } = null!;
+    public ICollection<SpecialistService> SpecialistServices { get; } = new List<SpecialistService>();
 }
