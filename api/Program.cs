@@ -14,15 +14,21 @@ builder.Services.AddDbContext<ApiContext>(options =>
     .UseSeeding((context, _) =>
     {
         var users = context.Set<User>();
+        var services = context.Set<Service>();
         if (!users.Any())
         {
             for (int i = 0; i < 5; i++)
             {
                 users.Add(new User
                 {
-                   Username =  $"user{i}",
+                   Username = $"user{i}",
                    Password = $"pass{i}",
                    Email = $"mail{i}@gmail.com"
+                });
+
+                services.Add(new Service
+                {
+                   Name = $"service{i}"
                 });
             }
             context.SaveChanges();
@@ -31,6 +37,7 @@ builder.Services.AddDbContext<ApiContext>(options =>
     .UseAsyncSeeding(async (context, _, cancelToken) =>
     {
         var users = context.Set<User>();
+        var services = context.Set<Service>();
         if (!await users.AnyAsync())
         {
             for (int i = 0; i < 5; i++)
@@ -40,6 +47,11 @@ builder.Services.AddDbContext<ApiContext>(options =>
                    Username =  $"user{i}",
                    Password = $"pass{i}",
                    Email = $"mail{i}@gmail.com"
+                });
+                
+                services.Add(new Service
+                {
+                   Name = $"service{i}"
                 });
             }
             await context.SaveChangesAsync(cancelToken);

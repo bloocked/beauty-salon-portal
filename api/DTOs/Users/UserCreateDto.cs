@@ -5,9 +5,9 @@ namespace api.DTOs.Users;
 public class UserCreateDto
 {
     [Required]
-    public required string Username { get; set; }
+    public string Username { get; set; } = null!;
     [Required]
-    public required string Password { get; set; }
+    public string Password { get; set; } = null!;
     [Required]
-    public required string Email { get; set; }
+    public string Email { get; set; } = null!;
 } 
