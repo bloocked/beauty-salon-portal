@@ -42,6 +42,7 @@ public static class Seeder
         
         var savedUsers = await context.Users.ToListAsync(ct);
         var savedSalons = await context.Salons.ToListAsync(ct);
+        var savedServices = await context.Services.ToListAsync(ct);
 
         for (int i = 0; i < savedUsers.Count; i++)
         {
@@ -53,8 +54,30 @@ public static class Seeder
                     SalonId = savedSalons[i].Id
                 });
             }
-            
-            await context.SaveChangesAsync(ct);
         }
+
+        await context.SaveChangesAsync(ct);
+
+        Random random = new Random();
+
+        var specialistList = await context.Specialists.ToListAsync(ct);
+
+        foreach(Specialist s in specialistList)
+        {
+            List<Service> shuffledServices = savedServices.OrderBy(s => random.Next()).ToList();
+
+            foreach (Service service in shuffledServices.Take(3))
+            {
+                context.SpecialistServices.Add(new SpecialistService
+                {
+                    SpecialistId = s.Id,
+                    ServiceId = service.Id,
+                    Cost = random.NextDouble() * 100,
+                    Duration = TimeSpan.FromMinutes(random.NextInt64(6) * 15)
+                });
+            }
+        }
+
+        await context.SaveChangesAsync(ct);
     }
 }
