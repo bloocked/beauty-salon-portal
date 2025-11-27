@@ -23,9 +23,10 @@ builder.Services.AddDbContext<ApiContext>(options =>
         var users = context.Set<User>();
         var services = context.Set<Service>();
         var salons = context.Set<Salon>();
+        var specialists = context.Set<Specialist>();
         if (!users.Any())
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
                 users.Add(new User
                 {
@@ -42,11 +43,27 @@ builder.Services.AddDbContext<ApiContext>(options =>
                 salons.Add(new Salon
                 {
                     Name = $"salon{i}",
-                    City = api.Enums.City.Kaunas,
+                    City = i % 2 == 0 ? City.Kaunas : City.Vilnius, // based ternary
                     Address = $"Street {i}"
                 });
             }
             context.SaveChanges();
+            
+            var savedUsers = users.ToList();
+            var savedSalons = salons.ToList();
+
+            for (int i = 0; i < savedUsers.Count; i++)
+            {
+                if (i % 3 == 0)
+                {
+                    specialists.Add(new Specialist
+                    {
+                        UserId = savedUsers[i].Id,
+                        SalonId = savedSalons[i].Id
+                    });
+                }
+            }
+             context.SaveChanges();
         }
     })
     .UseAsyncSeeding(async (context, _, cancelToken) =>
@@ -54,9 +71,10 @@ builder.Services.AddDbContext<ApiContext>(options =>
         var users = context.Set<User>();
         var services = context.Set<Service>();
         var salons = context.Set<Salon>();
+        var specialists = context.Set<Specialist>();
         if (!await users.AnyAsync())
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
                 users.Add(new User
                 {
@@ -73,9 +91,25 @@ builder.Services.AddDbContext<ApiContext>(options =>
                 salons.Add(new Salon
                 {
                     Name = $"salon{i}",
-                    City = City.Kaunas,
+                    City = i % 2 == 0 ? City.Kaunas : City.Vilnius,
                     Address = $"Street {i}"
                 });
+            }
+            await context.SaveChangesAsync(cancelToken);
+            
+            var savedUsers = await users.ToListAsync(cancelToken);
+            var savedSalons = await salons.ToListAsync(cancelToken);
+
+            for (int i = 0; i < savedUsers.Count; i++)
+            {
+                if (i % 3 == 0)
+                {
+                    specialists.Add(new Specialist
+                    {
+                        UserId = savedUsers[i].Id,
+                        SalonId = savedSalons[i].Id
+                    });
+                }
             }
             await context.SaveChangesAsync(cancelToken);
         }
