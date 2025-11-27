@@ -1,10 +1,14 @@
 const cityDropDown = document.getElementById("cities");
 const servicesDropdown = document.getElementById("services");
+const searchBtn = document.getElementById("searchBtn");
+const salonsContainer = document.getElementById("salons-container");
 
 const Cities = {
     Vilnius: "Vilnius",
     Kaunas: "Kaunas"
 };
+
+searchBtn.addEventListener("click", searchSalons);
 
 function populateCities() {
     Object.values(Cities).forEach(city => {
@@ -17,29 +21,29 @@ function populateCities() {
 }
 
 //refactor, look into adding helpers like an apiGet with error handling
-async function loadServices() {
+async function getResource(endpoint) {
     try {
-    const response = await fetch("api/services");
+    const response = await fetch(endpoint);
 
     if(!response.ok) {
         error = await response.text();
         window.alert(error);
-        return;
+        return [];
     }
     
-    const services = await response.json();
-    console.log(services); //ommit after debugging
+    const resource = await response.json();
+    console.log(resource); //ommit after debugging
 
-    return services;
+    return resource;
 
     } catch (e) {
         console.error(e);
+        return [];
     }
 }
 
-// probably merge cities and services into one func for populating
-function populateSelect(objects) {
-    objects.forEach(item => {
+function populateServices(array) {
+    array.forEach(item => {
         const option = document.createElement("option");
         option.value = item.name;
         option.textContent = item.name;
@@ -48,12 +52,46 @@ function populateSelect(objects) {
     })
 }
 
+function populateSalons(array) {
+    array.forEach(item => {
+        const card = document.createElement("div");
+        const name = document.createElement("h3");
+        const fullAddress = document.createElement("h4");
+
+        card.className = "card";
+        salonsContainer.appendChild(card);
+        name.innerHTML = item.name;
+        card.appendChild(name);
+        fullAddress.innerHTML = `${item.address}, ${item.city}`;
+        card.appendChild(fullAddress);
+    });
+}
+
+async function searchSalons() {
+    const city = cityDropDown.value;
+    const service = servicesDropdown.value;
+
+    const query = new URLSearchParams();
+
+    if (city) query.append("city", city);
+    if (service) query.append("service", service);
+
+    // call getResource with params
+    const salons = await getResource(`api/salons?${query.toString()}`);
+
+    //clear previous results
+    salonsContainer.innerHTML = "";
+    populateSalons(salons);
+}
+
 //not sure if this is needed but saw a recommendation
 async function init() {
-    const services = await loadServices();
+    const services = await getResource("api/services");
+    const salons = await getResource("api/salons");
 
     populateCities();
-    populateSelect(services);
+    populateServices(services);
+    populateSalons(salons);
 }
 
 init();

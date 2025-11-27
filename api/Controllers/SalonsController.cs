@@ -3,6 +3,7 @@ using api.Data;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 using api.DTOs.Salons;
+using api.Enums;
 
 namespace api.Controllers;
 
@@ -19,11 +20,31 @@ public class SalonsController : ControllerBase
 
     // GET: api/salons
     [HttpGet]
-    public async Task<ActionResult<List<User>>> GetSalons()
+    public async Task<ActionResult<List<Salon>>> GetSalons( //look more into query string usage
+        [FromQuery] string? city,
+        [FromQuery] string? service)
     {
-        var salons = await _context.Salons.ToListAsync();
+        var query = _context.Salons.AsQueryable();
 
-        if (!salons.Any()) return NotFound("Salons list is empty");
+        if (!string.IsNullOrEmpty(city))
+        {
+            if (Enum.TryParse<City>(city, out var cityEnum)) // its late, read again
+                query = query.Where(s => s.City == cityEnum);
+        }
+
+        if (!string.IsNullOrEmpty(service))
+        {
+            query = query.Where(salon =>  //might refactor in a bit
+                salon.Specialists.Any(specialist =>
+                    specialist.SpecialistServices.Any(sService =>
+                        sService.Service.Name == service)
+                    )
+            );
+        }
+
+        var salons = await query.ToListAsync(); //use select() for dtos later
+
+        if (salons.Count == 0) return NotFound("Salons list is empty");
 
         return Ok(salons);
     }

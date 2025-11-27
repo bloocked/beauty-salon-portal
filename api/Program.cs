@@ -1,20 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using api.Models;
 using api.Data;
+using api.Enums;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => //figure out how this works
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApiContext>(options => 
     options.UseSqlite("Data Source=dbase.db")
-    .UseSeeding((context, _) =>
+    .UseSeeding((context, _) => //most likely all of this seeding code will be removed after, will look for better ways to populate data
     {
         var users = context.Set<User>();
         var services = context.Set<Service>();
+        var salons = context.Set<Salon>();
         if (!users.Any())
         {
             for (int i = 0; i < 5; i++)
@@ -30,6 +38,13 @@ builder.Services.AddDbContext<ApiContext>(options =>
                 {
                    Name = $"service{i}"
                 });
+
+                salons.Add(new Salon
+                {
+                    Name = $"salon{i}",
+                    City = api.Enums.City.Kaunas,
+                    Address = $"Street {i}"
+                });
             }
             context.SaveChanges();
         }
@@ -38,6 +53,7 @@ builder.Services.AddDbContext<ApiContext>(options =>
     {
         var users = context.Set<User>();
         var services = context.Set<Service>();
+        var salons = context.Set<Salon>();
         if (!await users.AnyAsync())
         {
             for (int i = 0; i < 5; i++)
@@ -52,6 +68,13 @@ builder.Services.AddDbContext<ApiContext>(options =>
                 services.Add(new Service
                 {
                    Name = $"service{i}"
+                });
+
+                salons.Add(new Salon
+                {
+                    Name = $"salon{i}",
+                    City = City.Kaunas,
+                    Address = $"Street {i}"
                 });
             }
             await context.SaveChangesAsync(cancelToken);

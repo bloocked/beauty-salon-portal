@@ -9,7 +9,6 @@ public class SalonCreateDto
     [Required]
     public string Name { get; set; } = null!;
     [Required]
-    [JsonConverter(typeof(JsonStringEnumConverter))] //converts enum to string and back
     public City City { get; set; }
     [Required]
     public string Address { get; set; } = null!;

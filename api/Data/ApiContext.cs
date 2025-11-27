@@ -37,9 +37,7 @@ public class ApiContext : DbContext
                 .IsUnique();
 
             s.Property(s => s.City)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => Enum.Parse<City>(v));
+                .HasConversion<string>();
         });
 
         modelBuilder.Entity<Service>(s =>
