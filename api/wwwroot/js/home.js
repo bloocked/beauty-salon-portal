@@ -1,6 +1,6 @@
 const cityDropDown = document.getElementById("cities");
 const servicesDropdown = document.getElementById("services");
-const searchBtn = document.getElementById("searchBtn");
+const searchForm = document.getElementById("searchForm");
 const salonsContainer = document.getElementById("salons-container");
 
 const Cities = {
@@ -8,7 +8,10 @@ const Cities = {
     Kaunas: "Kaunas"
 };
 
-searchBtn.addEventListener("click", searchSalons);
+searchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    searchSalons();
+});
 
 function populateCities() {
     Object.values(Cities).forEach(city => {

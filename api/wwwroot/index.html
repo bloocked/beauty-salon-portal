@@ -19,18 +19,18 @@
     </nav>
 
     <h3>Search for a salon:</h3>
-    <select name="Services" id="services">
-      <option value="">Select a service</option>
-      <!--fetch services and populate dropdown-->
-    </select>
+    <form id="searchForm">
+      <select name="Services" id="services">
+        <option value="">Select a service</option>
+      </select>
+      
+      <select name="Cities" id="cities">
+        <option value="">Select a city</option>
+      </select>
+
+      <button type="submit" id="searchBtn">Search</button>
+    </form>
     
-    <select name="Cities" id="cities">
-      <option value="">Select a city</option>
-      <!--do the same for cities, but fetch default from client entity-->
-    </select>
-
-    <button id="searchBtn">Search</button>
-
     <div id="salons-container"></div>
   </body>
 </html>
