@@ -3,6 +3,8 @@ using api.Enums;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
+namespace api.Utils;
+
 public static class Seeder
 {
     /// <summary>
