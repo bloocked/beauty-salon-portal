@@ -82,9 +82,10 @@ async function searchSalons() {
     // call getResource with params
     const salons = await getResource(`api/salons?${query.toString()}`);
 
-    //clear previous results
-    salonsContainer.innerHTML = "";
-    populateSalons(salons);
+    if (salons && salons.length > 0) {
+        salonsContainer.innerHTML = ""; //clear previous results
+        populateSalons(salons);
+    }
 }
 
 //not sure if this is needed but saw a recommendation
