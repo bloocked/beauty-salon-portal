@@ -1,5 +1,9 @@
 const registerForm = document.getElementById("registerForm");
 
+registerForm.addEventListener("submit", event => {
+    event.preventDefault();
+    register();
+})
 
 async function register() {
     const formData = new FormData(registerForm);
@@ -23,7 +27,3 @@ async function register() {
     }
 }
 
-registerForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    register();
-})
