@@ -1,16 +1,18 @@
-using api.Enums;
+using Microsoft.AspNetCore.Identity;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace api.Data;
 
-public class ApiContext : DbContext
+public class ApiContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     public ApiContext(DbContextOptions<ApiContext> options) : base(options)
     {
     }
 
-    public DbSet<User> Users { get; set; }
+    //this gets inherited from identity
+    //public DbSet<User> Users { get; set; }
     public DbSet<Salon> Salons { get; set; }
     public DbSet<Specialist> Specialists { get; set; }
     public DbSet<Service> Services { get; set; }
@@ -19,12 +21,14 @@ public class ApiContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder); //identity needs this
+
         modelBuilder.Entity<User>(u =>
         {
             u.HasIndex(u => u.Email)
                 .IsUnique();
 
-            u.HasIndex(u => u.Username)
+            u.HasIndex(u => u.UserName)
                 .IsUnique();
         });
 

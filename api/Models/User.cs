@@ -1,15 +1,12 @@
 using api.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace api.Models;
 
-public class User
+public class User : IdentityUser<int>
 {
-    public int Id { get; set; }
-    public required string Username { get; set; }
-    public required string Password { get; set; } //hash this eventually
-    public required string Email { get; set; }
-    public City? City { get; set; }
-
+    // identity now handles Id, UserName, Email, PasswordHash
+    
     //optional navigation properties
     public Specialist? Specialist { get; set; }
     public ICollection<Reservation> Reservations = new List<Reservation>();

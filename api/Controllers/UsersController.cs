@@ -3,6 +3,7 @@ using api.Models;
 using api.DTOs.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace api.Controllers;
@@ -11,10 +12,10 @@ namespace api.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly ApiContext _context;
-    public UsersController(ApiContext context)
+    private readonly UserManager<User> _userManager;
+    public UsersController(UserManager<User> context)
     {
-        _context = context;
+        _userManager = context;
     }
 
     //currently not using dtos since its mostly for testing
@@ -23,7 +24,13 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<User>>> GetUsers()
     {
-        var users = await _context.Users.ToListAsync();
+        var users = await _userManager.Users.Select(u => new UserGetDto
+        {
+            Id = u.Id,
+            Username = u.UserName!,
+            Email = u.Email
+        })
+        .ToListAsync();
 
         if (users.Count == 0) return NotFound("Users list is empty");
 
@@ -34,7 +41,15 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
-        var result = await _context.Users.FindAsync(id);
+        var result = await _userManager.Users
+            .Where(u => u.Id == id)
+            .Select(u => new UserGetDto
+            {
+                Id = u.Id,
+                Username = u.UserName!,
+                Email = u.Email
+            })
+            .FirstAsync();
 
         if (result == null) return NotFound();
 
@@ -52,34 +67,39 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<User>> PostUser(UserCreateDto userDto)
     {
-        if (await _context.Users.AnyAsync(u => u.Email == userDto.Email))
+        if (await _userManager.Users.AnyAsync(u => u.Email == userDto.Email))
         {
             return BadRequest("Email already exists");
         }
 
-        if (await _context.Users.AnyAsync(u => u.Username == userDto.Username))
+        if (await _userManager.Users.AnyAsync(u => u.UserName == userDto.Username))
         {
             return BadRequest("Username is taken");
         }
 
-        var User = new User
+        var user = new User
         {
-            Username = userDto.Username,
-            Password = userDto.Password,
+            UserName = userDto.Username,
             Email = userDto.Email
         };
 
-        _context.Users.Add(User);
-        await _context.SaveChangesAsync();
+        var result = await _userManager.CreateAsync(user, userDto.Password); //creates and adds
+
+        if(!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+
+        await _userManager.AddToRoleAsync(user, "User"); // NEED TO ACTUALLY CREATE ROLES
 
         return CreatedAtAction(
         nameof(GetUser),
-        new { id = User.Id },
+        new { id = user.Id },
         new UserGetDto
         {
-            Id = User.Id,
-            Username = User.Username,
-            Email = User.Email
+            Id = user.Id,
+            Username = user.UserName,
+            Email = user.Email
         });
     }
 }
