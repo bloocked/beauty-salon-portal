@@ -1,6 +1,7 @@
 using api.Data;
 using api.Enums;
 using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Utils;
@@ -13,18 +14,19 @@ public static class Seeder
     /// <param name="context">The db context</param>
     /// <param name="ct"></param>
     /// <returns>A task to be awaited</returns>
-    public static async Task SeedAsync(ApiContext context, CancellationToken ct = default)
+    public static async Task SeedAsync(ApiContext context, UserManager<User> userManager, CancellationToken ct = default)
     {
         if (await context.Users.AnyAsync(ct)) return; //if seeded already
 
         for (int i = 0; i < 10; i++)
         {
-            context.Users.Add(new User
+            var user = new User
             {
-                Username = $"user{i}",
-                Password = $"pass{i}",
+                UserName = $"user{i}",
                 Email = $"mail{i}@gmail.com"
-            });
+            };
+
+            await userManager.CreateAsync(user, $"pass{i}");
 
             context.Services.Add(new Service
             {

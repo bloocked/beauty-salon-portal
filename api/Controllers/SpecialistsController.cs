@@ -43,8 +43,8 @@ public class SpecialistsController : ControllerBase
         var responseUser = new SpecialistGetDto
         {
             UserId = result.UserId,
-            Name = result.User.Username,
-            Email = result.User.Email,
+            Name = result.User.UserName!,
+            Email = result.User.Email!,
             SalonName = result.Salon.Name
         };
 
