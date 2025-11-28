@@ -19,11 +19,11 @@ builder.Services.AddControllers()
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<ApiContext>(options => 
+builder.Services.AddDbContext<ApiDbContext>(options => 
     options.UseSqlite("Data Source=dbase.db")
     .UseAsyncSeeding(async (context, _, cancelToken) =>
     {
-        await Seeder.SeedAsync((ApiContext)context, cancelToken);
+        await Seeder.SeedAsync((ApiDbContext)context, cancelToken);
     }));
 
 builder.Services.AddAuthentication(options =>
@@ -35,8 +35,8 @@ builder.Services.AddAuthentication(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateIssuer = true, //perhaps change to false
+        ValidateAudience = true, //perhaps change to false
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
@@ -46,10 +46,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 await using (var serviceScope = app.Services.CreateAsyncScope())
-using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApiContext>())
+using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApiDbContext>())
 {
     await dbContext.Database.EnsureCreatedAsync();
 }

@@ -9,9 +9,9 @@ namespace api.Controllers;
 [Route("api/[controller]")]
 public class ServicesController : ControllerBase
 {
-    private readonly ApiContext _context;
+    private readonly ApiDbContext _context;
 
-    public ServicesController(ApiContext context)
+    public ServicesController(ApiDbContext context)
     {
         _context = context;
     }

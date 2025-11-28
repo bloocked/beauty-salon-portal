@@ -12,8 +12,8 @@ namespace api.Controllers;
 [Route("api/[controller]")]
 public class SpecialistsController : ControllerBase
 {
-    private readonly ApiContext _context;
-    public SpecialistsController(ApiContext context)
+    private readonly ApiDbContext _context;
+    public SpecialistsController(ApiDbContext context)
     {
         _context = context;
     }

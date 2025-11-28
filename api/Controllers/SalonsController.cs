@@ -11,9 +11,9 @@ namespace api.Controllers;
 [Route("api/[controller]")]
 public class SalonsController : ControllerBase
 {
-    private readonly ApiContext _context;
+    private readonly ApiDbContext _context;
 
-    public SalonsController(ApiContext context)
+    public SalonsController(ApiDbContext context)
     {
         _context = context;
     }

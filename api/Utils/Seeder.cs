@@ -13,7 +13,7 @@ public static class Seeder
     /// <param name="context">The db context</param>
     /// <param name="ct"></param>
     /// <returns>A task to be awaited</returns>
-    public static async Task SeedAsync(ApiContext context, CancellationToken ct = default)
+    public static async Task SeedAsync(ApiDbContext context, CancellationToken ct = default)
     {
         if (await context.Users.AnyAsync(ct)) return; //if seeded already
 
