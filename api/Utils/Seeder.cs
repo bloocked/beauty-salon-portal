@@ -22,7 +22,7 @@ public static class Seeder
             context.Users.Add(new User
             {
                 Username = $"user{i}",
-                Password = $"pass{i}",
+                PasswordHash = Hasher.Hash($"pass{i}"),
                 Email = $"mail{i}@gmail.com"
             });
 

@@ -1,6 +1,7 @@
 using api.Data;
 using api.Models;
 using api.DTOs.Users;
+using api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,7 +66,7 @@ public class UsersController : ControllerBase
         var User = new User
         {
             Username = userDto.Username,
-            Password = userDto.Password,
+            PasswordHash = Hasher.Hash(userDto.Password),
             Email = userDto.Email
         };
 

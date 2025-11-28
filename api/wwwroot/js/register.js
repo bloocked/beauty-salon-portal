@@ -27,4 +27,3 @@ registerForm.addEventListener("submit", (event) => {
     event.preventDefault();
     register();
 })
-
