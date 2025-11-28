@@ -2,11 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using api.Data;
 using System.Text.Json.Serialization;
 using api.Utils;
-using api.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,16 +21,6 @@ builder.Services.AddDbContext<ApiContext>(options =>
     {
         await Seeder.SeedAsync((ApiContext)context, cancelToken);
     }));
-
-builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
-{
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 5;
-})
-.AddEntityFrameworkStores<ApiContext>()
-.AddDefaultTokenProviders();
-
 
 builder.Services.AddAuthentication(options =>
 {
