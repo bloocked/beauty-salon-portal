@@ -2,6 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using api.Data;
 using System.Text.Json.Serialization;
 using api.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
