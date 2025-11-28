@@ -21,7 +21,12 @@ builder.Services.AddControllers()
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApiContext>(options => 
-    options.UseSqlite("Data Source=dbase.db"));
+    options.UseSqlite("Data Source=dbase.db")
+    .UseAsyncSeeding(async (context, _, cancelToken) =>
+    {
+        await Seeder.SeedAsync((ApiContext)context, cancelToken);
+    }));
+
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 {
     options.Password.RequireNonAlphanumeric = false;
@@ -55,12 +60,9 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 await using (var serviceScope = app.Services.CreateAsyncScope())
+using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApiContext>())
 {
-    var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApiContext>();
-    var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<User>>();
-
     await dbContext.Database.EnsureCreatedAsync();
-    await Seeder.SeedAsync(dbContext, userManager);
 }
 
 // Configure the HTTP request pipeline.
