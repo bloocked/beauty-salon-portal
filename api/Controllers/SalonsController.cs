@@ -4,6 +4,7 @@ using api.Models;
 using Microsoft.EntityFrameworkCore;
 using api.DTOs.Salons;
 using api.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers;
 
@@ -70,6 +71,7 @@ public class SalonsController : ControllerBase
     }
 
     // POST: api/salons
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<SalonGetDto>> PostSalon(SalonCreateDto salonDto)
     {

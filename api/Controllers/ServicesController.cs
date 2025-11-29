@@ -1,6 +1,7 @@
 using api.Data;
 using api.DTOs.Services;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ public class ServicesController : ControllerBase
     }
 
     // GET: api/services
+    [Authorize(Roles = "Specialist")]
     [HttpGet]
     public async Task<ActionResult<List<Service>>> GetServices()
     {
@@ -28,6 +30,7 @@ public class ServicesController : ControllerBase
     }
 
     // GET: api/services/{id}
+    [Authorize(Roles = "Specialist")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetService(int id)
     {

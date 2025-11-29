@@ -46,7 +46,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Specialist", policy =>
+        policy.RequireAssertion(context =>
+            context.User.IsInRole("Specialist") || context.User.IsInRole("Admin")));
+});
 
 var app = builder.Build();
 

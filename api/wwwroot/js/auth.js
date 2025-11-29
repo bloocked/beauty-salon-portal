@@ -21,6 +21,7 @@ async function auth() {
 
         if (response.ok) {
             localStorage.setItem("jwt", data.token);
+            window.currentUser = jwt_decode(data.token);
 
             window.alert("Login success");
             window.location.href = "index.html";
