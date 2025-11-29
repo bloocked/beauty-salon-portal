@@ -1,7 +1,10 @@
+import { getResource } from "./modules/utils.js";
+import { populateCities, populateServices } from "./modules/dropdown.js";
+
 const cityDropDown = document.getElementById("cities");
 const servicesDropdown = document.getElementById("services");
 const searchForm = document.getElementById("searchForm");
-const salonsContainer = document.getElementById("salons-container");
+const salonsContainer = document.getElementById("salonsContainer");
 
 const Cities = {
     Vilnius: "Vilnius",
@@ -13,49 +16,8 @@ searchForm.addEventListener("submit", (event) => {
     searchSalons();
 });
 
-function populateCities() {
-    Object.values(Cities).forEach(city => {
-    const option = document.createElement("option");
-    option.value = city;
-    option.textContent = city;
-
-    cityDropDown.appendChild(option);
-});
-}
-
-//refactor, look into adding helpers like an apiGet with error handling
-async function getResource(endpoint) {
-    try {
-    const response = await fetch(endpoint);
-
-    if(!response.ok) {
-        error = await response.text();
-        window.alert(error);
-        return [];
-    }
-    
-    const resource = await response.json();
-    console.log(resource); //ommit after debugging
-
-    return resource;
-
-    } catch (e) {
-        console.error(e);
-        return [];
-    }
-}
-
-function populateServices(array) {
-    array.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.name;
-        option.textContent = item.name;
-
-        servicesDropdown.appendChild(option);
-    })
-}
-
-function populateSalons(array) {
+function populateSalons(container, array) {
+    container.innerHTML = "";
     array.forEach(item => {
         const card = document.createElement("div");
         const name = document.createElement("h3");
@@ -83,8 +45,7 @@ async function searchSalons() {
     const salons = await getResource(`api/salons?${query.toString()}`);
 
     if (salons && salons.length > 0) {
-        salonsContainer.innerHTML = ""; //clear previous results
-        populateSalons(salons);
+        populateSalons(salonsContainer, salons);
     }
 }
 
@@ -93,9 +54,9 @@ async function init() {
     const services = await getResource("api/services");
     const salons = await getResource("api/salons");
 
-    populateCities();
-    populateServices(services);
-    populateSalons(salons);
+    populateCities(cityDropDown, Cities);
+    populateServices(servicesDropdown, services);
+    populateSalons(salonsContainer, salons);
 }
 
 init();

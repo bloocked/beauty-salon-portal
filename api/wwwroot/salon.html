@@ -4,33 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <title>Home</title>
-
+    <title>HTML 5 Boilerplate</title>
     <link rel="stylesheet" href="style.css">
-    
-    <script type="module" src="js/home.js" defer></script>
+    <script type="module" src="js/salon.js" defer></script>
   </head>
   <body>
-    <nav>
-      <ul>
-        <li><a href="register.html">Register</a></li>
-      </ul>
-    </nav>
+    <h1 id="salonName"></h1>
 
-    <h3>Search for a salon:</h3>
+    <h3>Search for a service:</h3>
+
     <form id="searchForm">
       <select name="Services" id="services">
         <option value="">Select a service</option>
       </select>
-      
-      <select name="Cities" id="cities">
-        <option value="">Select a city</option>
-      </select>
-
       <button type="submit" id="searchBtn">Search</button>
     </form>
-    
-    <div id="salonsContainer"></div>
+
+    <h2>Specialists:</h2>
+    <div id="specialistsContainer"></div>
   </body>
 </html>
