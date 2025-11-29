@@ -18,7 +18,7 @@ public class ServicesController : ControllerBase
     }
 
     // GET: api/services
-    [Authorize(Roles = "Specialist")]
+    //[Authorize(Roles = "Specialist")]
     [HttpGet]
     public async Task<ActionResult<List<Service>>> GetServices()
     {
@@ -30,7 +30,7 @@ public class ServicesController : ControllerBase
     }
 
     // GET: api/services/{id}
-    [Authorize(Roles = "Specialist")]
+    //[Authorize(Roles = "Specialist")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetService(int id)
     {

@@ -4,6 +4,7 @@ using api.DTOs.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using api.DTOs.Specialists;
+using api.DTOs.SpecialistServices;
 
 
 namespace api.Controllers;
@@ -20,13 +21,53 @@ public class SpecialistsController : ControllerBase
 
     // GET: api/specialists
     [HttpGet]
-    public async Task<ActionResult<List<Specialist>>> GetSpecialists()
+    public async Task<ActionResult<List<Specialist>>> GetSpecialists(
+        [FromQuery] string? serviceProvided)
     {
-        var Specs = await _context.Specialists.ToListAsync();
+        var query = _context.Specialists
+        .Include(s => s.User)
+        .Include(s => s.SpecialistServices)
+        .ThenInclude(ss => ss.Service)
+        .AsQueryable();
 
-        if (Specs.Count == 0) return NotFound("Specialists list is empty");
+        if (!string.IsNullOrEmpty(serviceProvided))
+        {
+            query = query.Where(specialist =>
+                specialist.SpecialistServices.Any(sService =>
+                    sService.Service.Name == serviceProvided));
+        }
 
-        return Ok(Specs);
+        var specialists = await query.ToListAsync();
+
+        //see if this can be less like this !!!
+        var specialistDtos = specialists.Select(s => new SpecialistGetDto 
+        {
+            UserId = s.UserId,
+            Name = s.User.Username,
+            Services = string.IsNullOrEmpty(serviceProvided) ?
+            s.SpecialistServices.Select(ss => new SpecialistServiceGetDto
+            {
+                Id = ss.Id,
+                Name = ss.Service.Name,
+                Cost = ss.Cost,
+                Duration = ss.Duration
+
+            }).ToList() :
+            s.SpecialistServices.Where(ss =>
+                ss.Service.Name == serviceProvided)
+                .Select(ss => new SpecialistServiceGetDto
+                {
+                    Id = ss.Id,
+                    Name = ss.Service.Name,
+                    Cost = ss.Cost,
+                    Duration = ss.Duration
+                }).ToList()
+
+        }).ToList();
+
+        if (specialistDtos.Count == 0) return NotFound("Specialists list is empty");
+
+        return Ok(specialistDtos);
     }
 
     // GET: api/specialists/{id}
