@@ -104,11 +104,6 @@ public class SpecialistsController : ControllerBase
         .Include(r => r.SpecialistService)
         .ToListAsync();
 
-        // var selectedService = await _context.SpecialistServices
-        // .FirstOrDefaultAsync(ss => ss.SpecialistId == specialistId && ss.Id == sServiceId);
-
-        // if (selectedService == null) return BadRequest("Service does not exist");
-
         var slots = new List<DateTime>();
         for (var time = selectedDate; time < selectedDate.AddDays(1); time += interval)
         {
