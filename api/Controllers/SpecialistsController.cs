@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using api.DTOs.Specialists;
 using api.DTOs.SpecialistServices;
+using System.Runtime.Intrinsics.X86;
 
 
 namespace api.Controllers;
@@ -22,6 +23,7 @@ public class SpecialistsController : ControllerBase
     // GET: api/specialists
     [HttpGet]
     public async Task<ActionResult<List<Specialist>>> GetSpecialists(
+        [FromQuery] int? salonId,
         [FromQuery] string? serviceProvided)
     {
         var query = _context.Specialists
@@ -29,6 +31,11 @@ public class SpecialistsController : ControllerBase
         .Include(s => s.SpecialistServices)
         .ThenInclude(ss => ss.Service)
         .AsQueryable();
+
+        if (salonId != null)
+        {
+            query = query.Where(s => s.SalonId == salonId);
+        }
 
         if (!string.IsNullOrEmpty(serviceProvided))
         {
@@ -39,30 +46,21 @@ public class SpecialistsController : ControllerBase
 
         var specialists = await query.ToListAsync();
 
-        //see if this can be less like this !!!
+        //cleaned it up
         var specialistDtos = specialists.Select(s => new SpecialistGetDto 
         {
             UserId = s.UserId,
             Name = s.User.Username,
-            Services = string.IsNullOrEmpty(serviceProvided) ?
-            s.SpecialistServices.Select(ss => new SpecialistServiceGetDto
+            Services = s.SpecialistServices
+            .Where(ss => string.IsNullOrEmpty(serviceProvided) || ss.Service.Name == serviceProvided)
+            .Select(ss => new SpecialistServiceGetDto
             {
                 Id = ss.Id,
                 Name = ss.Service.Name,
                 Cost = ss.Cost,
                 Duration = ss.Duration
 
-            }).ToList() :
-            s.SpecialistServices.Where(ss =>
-                ss.Service.Name == serviceProvided)
-                .Select(ss => new SpecialistServiceGetDto
-                {
-                    Id = ss.Id,
-                    Name = ss.Service.Name,
-                    Cost = ss.Cost,
-                    Duration = ss.Duration
-                }).ToList()
-
+            }).ToList()
         }).ToList();
 
         if (specialistDtos.Count == 0) return NotFound("Specialists list is empty");

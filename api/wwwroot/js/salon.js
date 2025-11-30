@@ -11,10 +11,20 @@ searchForm.addEventListener("submit", event => {
     searchSpecialists();
 })
 
+specialistsContainer.addEventListener("click", event => { //event delegation is based
+    event.preventDefault();
+    const card = event.target.closest(".card");
+
+    if (!card) return;
+
+    console.log(`Clicked specialist id: ${card.dataset.id}`);
+    // WE NOW ROUTE TO THE SPECIALIST SCHEDULE!!
+})
+
 async function searchSpecialists() {
     const service = servicesDropdown.value;
 
-    const query = new URLSearchParams();
+    const query = new URLSearchParams(window.location.search);
 
     if (service) query.append("service", service);
 
@@ -22,23 +32,38 @@ async function searchSpecialists() {
     const specialists = await getResource(`api/specialists?${query.toString()}`);
 
     if (specialists && specialists.length > 0) {
-        populateSpecialists(salonsContainer, specialists);
+        populateSpecialists(specialistsContainer, specialists);
     }
 }
 
 function populateSpecialists(container, array) {
     container.innerHTML = "";
-    array.forEach(item => {
-        const card = document.createElement("div");
-        const name = document.createElement("h3");
-        const service = document.createElement("h4");
+    array.forEach(specialist => {
 
-        card.className = "card";
-        specialistsContainer.appendChild(card);
-        name.innerHTML = item.name;
-        card.appendChild(name);
-        service.innerHTML = `${item.services[0].name}, ${item.services[0].cost}`;
-        card.appendChild(service);
+        const selected = servicesDropdown.value;
+        const matchedService = specialist.services.find(s => s.name == selected);
+
+        if (matchedService) {
+
+            const card = document.createElement("div");
+            const name = document.createElement("h3");
+            const service = document.createElement("h4");
+
+            card.dataset.id = specialist.userId;
+
+            card.className = "card";
+            specialistsContainer.appendChild(card);
+            name.innerHTML = specialist.name;
+            card.appendChild(name);
+
+            card.className = "card";
+            specialistsContainer.appendChild(card);
+            name.innerHTML = specialist.name;
+            card.appendChild(name);
+            service.innerHTML = `${matchedService.name}, ${matchedService.cost}`;
+
+            card.appendChild(service);
+        }
     });
 }
 

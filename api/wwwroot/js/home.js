@@ -16,18 +16,33 @@ searchForm.addEventListener("submit", (event) => {
     searchSalons();
 });
 
+salonsContainer.addEventListener("click", event =>{
+    event.preventDefault();
+    const card = event.target.closest(".card");
+
+    const salonId = card.dataset.id;
+    window.alert(salonId);
+
+    const query = new URLSearchParams();
+    query.append("salonId", salonId);
+    
+    window.location.href = `/salon.html?${query.toString()}`
+});
+
 function populateSalons(container, array) {
     container.innerHTML = "";
-    array.forEach(item => {
+    array.forEach(salon => {
         const card = document.createElement("div");
         const name = document.createElement("h3");
         const fullAddress = document.createElement("h4");
 
+        card.dataset.id = salon.id;
+
         card.className = "card";
         salonsContainer.appendChild(card);
-        name.innerHTML = item.name;
+        name.innerHTML = salon.name;
         card.appendChild(name);
-        fullAddress.innerHTML = `${item.address}, ${item.city}`;
+        fullAddress.innerHTML = `${salon.address}, ${salon.city}`;
         card.appendChild(fullAddress);
     });
 }
