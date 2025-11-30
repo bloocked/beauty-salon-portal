@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using api.DTOs.Specialists;
 using api.DTOs.SpecialistServices;
 using System.Runtime.Intrinsics.X86;
+using SQLitePCL;
 
 
 namespace api.Controllers;
@@ -92,7 +93,7 @@ public class SpecialistsController : ControllerBase
 
     // currently broken
     [HttpGet("{specialistId}/occupied-slots")]
-    public async Task<IActionResult> GetOccupiedSlots(int specialistId, DateTime date, int sServiceId)
+    public async Task<IActionResult> GetOccupiedSlots(int specialistId, DateTime date)
     {
         TimeSpan interval = TimeSpan.FromMinutes(15);
 
@@ -103,10 +104,10 @@ public class SpecialistsController : ControllerBase
         .Include(r => r.SpecialistService)
         .ToListAsync();
 
-        var selectedService = _context.SpecialistServices
-        .FirstOrDefault(ss => ss.SpecialistId == specialistId && ss.Id == sServiceId);
+        // var selectedService = await _context.SpecialistServices
+        // .FirstOrDefaultAsync(ss => ss.SpecialistId == specialistId && ss.Id == sServiceId);
 
-        if (selectedService == null) return BadRequest("Service does not exist");
+        // if (selectedService == null) return BadRequest("Service does not exist");
 
         var slots = new List<DateTime>();
         for (var time = selectedDate; time < selectedDate.AddDays(1); time += interval)
@@ -114,17 +115,14 @@ public class SpecialistsController : ControllerBase
             slots.Add(time);
         }
 
-        var occupiedSlots = slots.Where(slot =>
-            reservations.Any(r =>
-            r.StartTime < slot.Add(selectedService.Duration) &&
-            r.StartTime.Add(r.SpecialistService.Duration) > slot))
-            .Select(s => new OccupiedSlotDto
-            {
-                StartTime = s,
-                EndTime = s.Add(selectedService.Duration)
-            })
-            .ToList();
+        var occupiedIntervals = reservations.Select(r => new OccupiedSlotDto
+        {
+            StartTime = r.StartTime,
+            EndTime = r.StartTime.Add(r.SpecialistService.Duration)
+        })
+        .OrderBy(r => r.StartTime)
+        .ToList();
 
-        return Ok(occupiedSlots);
+        return Ok(occupiedIntervals);
     }
 }
