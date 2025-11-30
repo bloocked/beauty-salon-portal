@@ -90,38 +90,41 @@ public class SpecialistsController : ControllerBase
         return Ok(responseUser);
     }
 
-    // // POST: api/users
-    // [HttpPost]
-    // public async Task<ActionResult<User>> PostUser(UserCreateDto userDto)
-    // {
-    //     if (await _context.Users.AnyAsync(u => u.Email == userDto.Email))
-    //     {
-    //         return BadRequest("Email already exists");
-    //     }
+    // currently broken
+    [HttpGet("{specialistId}/occupied-slots")]
+    public async Task<IActionResult> GetOccupiedSlots(int specialistId, DateTime date, int sServiceId)
+    {
+        TimeSpan interval = TimeSpan.FromMinutes(15);
 
-    //     if (await _context.Users.AnyAsync(u => u.Username == userDto.Username))
-    //     {
-    //         return BadRequest("Username is taken");
-    //     }
+        var selectedDate = date.Date;
 
-    //     var User = new User
-    //     {
-    //         Username = userDto.Username,
-    //         Password = userDto.Password,
-    //         Email = userDto.Email
-    //     };
+        var reservations = await _context.Reservations
+        .Where(r => r.SpecialistId == specialistId && r.StartTime.Date == selectedDate)
+        .Include(r => r.SpecialistService)
+        .ToListAsync();
 
-    //     _context.Users.Add(User);
-    //     await _context.SaveChangesAsync();
+        var selectedService = _context.SpecialistServices
+        .FirstOrDefault(ss => ss.SpecialistId == specialistId && ss.Id == sServiceId);
 
-    //     return CreatedAtAction(
-    //     nameof(GetUser),
-    //     new { id = User.Id },
-    //     new UserGetDto
-    //     {
-    //         Id = User.Id,
-    //         Username = User.Username,
-    //         Email = User.Email
-    //     });
-    // }
+        if (selectedService == null) return BadRequest("Service does not exist");
+
+        var slots = new List<DateTime>();
+        for (var time = selectedDate; time < selectedDate.AddDays(1); time += interval)
+        {
+            slots.Add(time);
+        }
+
+        var occupiedSlots = slots.Where(slot =>
+            reservations.Any(r =>
+            r.StartTime < slot.Add(selectedService.Duration) &&
+            r.StartTime.Add(r.SpecialistService.Duration) > slot))
+            .Select(s => new OccupiedSlotDto
+            {
+                StartTime = s,
+                EndTime = s.Add(selectedService.Duration)
+            })
+            .ToList();
+
+        return Ok(occupiedSlots);
+    }
 }

@@ -15,10 +15,13 @@ public class ReservationsController : ControllerBase
         _context = context;
     }
 
+    [HttpPost]
     public async Task<ActionResult<Reservation>> PostReservation(ReservationCreateDto reservationDto)
     {
         var service = await _context.SpecialistServices
-        .FirstOrDefaultAsync(s => s.Id == reservationDto.SpecialistServiceId);
+        .FirstOrDefaultAsync(s =>
+        s.SpecialistId == reservationDto.SpecialistId &&
+        s.Id == reservationDto.SpecialistServiceId);
 
         if (service == null) return NotFound("Service doesnt exist");
 
@@ -27,7 +30,7 @@ public class ReservationsController : ControllerBase
         bool overlap = await _context.Reservations
             .AnyAsync(r => r.SpecialistId == reservationDto.SpecialistId &&
             r.StartTime < newEndTime &&
-            r.StartTime.Add(service.Duration) > reservationDto.StartTime);
+            r.StartTime.AddMinutes(service.Duration.TotalMinutes) > reservationDto.StartTime);
 
         if (overlap) return BadRequest("Reservations cannot overlap");
 
@@ -35,6 +38,7 @@ public class ReservationsController : ControllerBase
         {
             SpecialistServiceId = reservationDto.SpecialistServiceId,
             SpecialistId = reservationDto.SpecialistId,
+            ClientId = reservationDto.ClientId,
             StartTime = reservationDto.StartTime
         };
 
