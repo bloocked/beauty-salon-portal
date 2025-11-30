@@ -70,16 +70,16 @@ public class ApiDbContext : DbContext
 
        modelBuilder.Entity<Reservation>(r =>
        {
-            r.HasIndex(r => new { r.StartTime, r.SpecialistServiceId })
+            r.HasIndex(r => new { r.SpecialistId, r.StartTime })
                 .IsUnique();
 
             r.HasOne(r => r.SpecialistService)
                 .WithMany(ss => ss.Reservations)
-                .HasForeignKey(ss => ss.SpecialistServiceId);
+                .HasForeignKey(r => r.SpecialistServiceId);
 
             r.HasOne(r => r.Client)
                 .WithMany(c => c.Reservations)
-                .HasForeignKey(r => r.UserId);
+                .HasForeignKey(r => r.ClientId);
        });
     }
 }
