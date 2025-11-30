@@ -17,8 +17,11 @@ specialistsContainer.addEventListener("click", event => { //event delegation is 
 
     if (!card) return;
 
-    console.log(`Clicked specialist id: ${card.dataset.id}`);
-    // WE NOW ROUTE TO THE SPECIALIST SCHEDULE!!
+    //console.log(`Clicked specialist id: ${card.dataset.id}`);
+    const query = new URLSearchParams();
+    query.append("specialistId", card.dataset.specialistId);
+    query.append("specialistServiceId", card.dataset.serviceId);
+    window.location.href = `specialist.html?${query.toString()}`;
 })
 
 async function searchSpecialists() {
@@ -49,7 +52,8 @@ function populateSpecialists(container, array) {
             const name = document.createElement("h3");
             const service = document.createElement("h4");
 
-            card.dataset.id = specialist.userId;
+            card.dataset.specialistId = specialist.userId;
+            card.dataset.serviceId = matchedService.id;
 
             card.className = "card";
             specialistsContainer.appendChild(card);

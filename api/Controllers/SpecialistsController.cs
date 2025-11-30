@@ -91,9 +91,10 @@ public class SpecialistsController : ControllerBase
         return Ok(responseUser);
     }
 
-    // currently broken
     [HttpGet("{specialistId}/occupied-slots")]
-    public async Task<IActionResult> GetOccupiedSlots(int specialistId, DateTime date)
+    public async Task<IActionResult> GetOccupiedSlots(
+        [FromQuery] int specialistId,
+        [FromQuery] DateTime date)
     {
         TimeSpan interval = TimeSpan.FromMinutes(15);
 
