@@ -57,10 +57,10 @@ function populateSlots(slots, occupiedIntervals) {
 
     const minuteInterval = 15;
     const dateToDisplay = new Date(selectedDate.value);
-    dateToDisplay.setHours(8, 0, 0, 0); // start of the workday
+    dateToDisplay.setHours(0, 0, 0, 0); // start of the workday
 
     const dayEnd = new Date(dateToDisplay);
-    dayEnd.setHours(22, 0, 0, 0);       // end of the workday
+    dayEnd.setHours(24, 0, 0, 0);       // end of the workday (look at enforcing specific times in backend)
 
     let curr = new Date(dateToDisplay);
 

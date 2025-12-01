@@ -26,7 +26,7 @@ public class ReservationsController : ControllerBase
 
         if (service == null) return NotFound("Service doesnt exist");
 
-        if (service.Duration.Minutes < 15) 
+        if (service.Duration.TotalMinutes < 15) 
             return BadRequest("Service duration incorrect, must be longer than 15 min");
 
         var newEndTime = reservationDto.StartTime.Add(service.Duration);
@@ -34,7 +34,7 @@ public class ReservationsController : ControllerBase
         bool overlap = await _context.Reservations
             .AnyAsync(r => r.SpecialistId == reservationDto.SpecialistId &&
             r.StartTime < newEndTime &&
-            r.StartTime.AddMinutes(service.Duration.TotalMinutes) > reservationDto.StartTime);
+            r.EndTime > reservationDto.StartTime);
 
         if (overlap) return BadRequest("Reservations cannot overlap");
 
@@ -43,13 +43,14 @@ public class ReservationsController : ControllerBase
             SpecialistServiceId = reservationDto.SpecialistServiceId,
             SpecialistId = reservationDto.SpecialistId,
             ClientId = reservationDto.ClientId,
-            StartTime = reservationDto.StartTime
+            StartTime = reservationDto.StartTime,
+            EndTime = newEndTime
         };
 
         _context.Reservations.Add(reservation);
         await _context.SaveChangesAsync();
 
-        //return CreatedAtAction() eventually, for now just
+        //return CreatedAtAction() eventually with reservation, for now just
         return Created("", reservationDto);
     }
 }

@@ -7,6 +7,7 @@ public class Reservation
     public int SpecialistId { get; set; }
     public int ClientId { get; set; }
     public DateTime StartTime { get; set; }
+    public DateTime EndTime { get; set; }
 
     // navigation properties
 

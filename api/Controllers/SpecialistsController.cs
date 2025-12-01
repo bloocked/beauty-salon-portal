@@ -105,16 +105,10 @@ public class SpecialistsController : ControllerBase
         .Include(r => r.SpecialistService)
         .ToListAsync();
 
-        var slots = new List<DateTime>();
-        for (var time = selectedDate; time < selectedDate.AddDays(1); time += interval)
-        {
-            slots.Add(time);
-        }
-
         var occupiedIntervals = reservations.Select(r => new OccupiedSlotDto
         {
             StartTime = r.StartTime,
-            EndTime = r.StartTime.Add(r.SpecialistService.Duration)
+            EndTime = r.EndTime
         })
         .OrderBy(r => r.StartTime)
         .ToList();
