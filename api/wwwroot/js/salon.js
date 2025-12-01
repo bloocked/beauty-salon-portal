@@ -37,7 +37,12 @@ async function searchSpecialists() {
     if (specialists && specialists.length > 0) {
         populateSpecialists(specialistsContainer, specialists);
     }
+    else {
+        specialistsContainer.innerHTML = "<p>No specialists found.</p>";
+    }
 }
+
+// SEARCH AND POPULATE NEED LOOKING INTO, FLOW DOESNT MAKE SENSE ATM
 
 function populateSpecialists(container, array) {
     container.innerHTML = "";
