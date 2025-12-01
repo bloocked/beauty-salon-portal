@@ -1,15 +1,54 @@
-async function loadNavbar() {
-    const placeholder = document.getElementById("navbar");
+import { getCurrentUserFromToken, logout } from "./utils.js";
 
-    if (!placeholder) return;
+const navbar = document.getElementById("navbar");
 
-    try {
-        const response = await fetch ("navbar.html");
-        const navbarHtml = await response.text();
-        placeholder.innerHTML = navbarHtml;
-    } catch (e) {
-        console.error(e);
+
+navbar.addEventListener("click", event => {
+    if (event.target.id === "logoutBtn") {
+        event.preventDefault();
+        logout();
+        renderNavbar();
     }
+});
+
+async function renderNavbar() {
+    if (!navbar) return;
+
+    const user = getCurrentUserFromToken();
+
+    let html = `
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+    `;
+
+    if (user && user.role === "Admin") {
+        html += `
+                <li><a href="admin.html">Admin Panel</a></li>
+            </ul>
+        </nav>
+        `;
+    }
+    else if (user) {
+        html += `
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+        `;
+    }
+    else {
+        html += `
+                <li><a href="register.html">Register</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+        `;
+    }
+
+
+    navbar.innerHTML = html;
 }
 
-loadNavbar();
+
+
+ renderNavbar();

@@ -1,4 +1,4 @@
-import { getResource } from "./modules/utils.js";
+import { getResource, getCurrentUserFromToken } from "./modules/utils.js";
 
 const schedule = document.getElementById("scheduleContainer");
 const selectedDate = document.getElementById("calendarDate");
@@ -10,32 +10,44 @@ const specialistServiceId = queryString.get("specialistServiceId");
 
 const slots = [];
 let occupiedIntervals = [];
+const currentUser = getCurrentUserFromToken();
 
 schedule.addEventListener("click", async event => {
     const slot = event.target.closest(".slotBtn");
 
     if (!slot) return;
+
     const slotDate = slot.dataset.date;
+    if (currentUser === null) {
+        window.alert("Please log in to make a reservation.");
+        return;
+    }
 
     const reservation = { 
         specialistId: Number(specialistId),
         specialistServiceId: Number(specialistServiceId),
-        clientId: 2,                                        // PLACEHOLDER, WILL USE JWT DATA LATER
+        clientId: Number(currentUser.nameid),        // PLACEHOLDER, WILL USE JWT DATA LATER
         startTime: formatLocalDateTime(new Date(slotDate))  // should fix incorrect post dates
     }
 
     try {
         const response = await fetch("/api/reservations", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("jwt")}`
+         },
         body: JSON.stringify(reservation)
         })
 
-        if (response.ok) 
+        if (response.ok) {
             window.alert("Reservation success!");
-
-        occupiedIntervals = await getOccupiedSlots();
-        disableOccupied(slots, occupiedIntervals);
+            occupiedIntervals = await getOccupiedSlots();
+            disableOccupied(slots, occupiedIntervals);
+        } else {
+            const error = await response.text();
+            window.alert(error);
+        }
     } catch (e) {
         console.error(e);
     }

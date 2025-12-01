@@ -1,6 +1,7 @@
 using api.Data;
 using api.DTOs.Reservations;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -16,6 +17,7 @@ public class ReservationsController : ControllerBase
         _context = context;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Reservation>> PostReservation(ReservationCreateDto reservationDto)
     {

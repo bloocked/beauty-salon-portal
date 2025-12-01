@@ -19,3 +19,15 @@ export async function getResource(endpoint, urlParams = "") {
         return [];
     }
 }
+
+export function getCurrentUserFromToken() {
+    const token = localStorage.getItem("jwt");
+    if (!token) return null;
+
+    return jwt_decode(token);
+}
+
+export function logout() {
+    localStorage.removeItem("jwt");
+    window.location.href = "#";
+}

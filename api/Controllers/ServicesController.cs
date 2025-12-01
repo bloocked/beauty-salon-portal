@@ -18,11 +18,14 @@ public class ServicesController : ControllerBase
     }
 
     // GET: api/services
-    //[Authorize(Roles = "Specialist")]
     [HttpGet]
     public async Task<ActionResult<List<Service>>> GetServices()
     {
-        var services = await _context.Services.ToListAsync();
+        var services = await _context.Services.Select(s => new ServiceGetDto
+        {
+            Id = s.Id,
+            Name = s.Name
+        }).ToListAsync();
 
         if (services.Count == 0) return NotFound("Services list is empty");
 
@@ -30,7 +33,6 @@ public class ServicesController : ControllerBase
     }
 
     // GET: api/services/{id}
-    //[Authorize(Roles = "Specialist")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetService(int id)
     {

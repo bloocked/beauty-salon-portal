@@ -1,5 +1,9 @@
 const loginForm = document.getElementById("loginForm");
 
+if (localStorage.getItem("jwt")) {
+    window.location.href = "index.html";
+}
+
 loginForm.addEventListener("submit", event => {
     event.preventDefault();
     auth();
@@ -8,7 +12,6 @@ loginForm.addEventListener("submit", event => {
 async function auth() {
     const formData = new FormData(loginForm);
     const user = Object.fromEntries(formData);
-    console.log("Logging in:", user);
 
     try {
         const response = await fetch("/api/auth/login", {
@@ -21,7 +24,6 @@ async function auth() {
 
         if (response.ok) {
             localStorage.setItem("jwt", data.token);
-            window.currentUser = jwt_decode(data.token);
 
             window.alert("Login success");
             window.location.href = "index.html";

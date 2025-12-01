@@ -22,6 +22,7 @@ public class UsersController : ControllerBase
     //currently not using dtos since its mostly for testing
     //if there is a need to keep, will sanitize
     // GET: api/users
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult<List<User>>> GetUsers()
     {

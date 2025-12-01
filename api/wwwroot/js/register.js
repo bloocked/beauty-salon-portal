@@ -17,7 +17,10 @@ async function register() {
         body: JSON.stringify(user)
         });
 
-        if (response.ok) window.alert("Registration success");
+        if (response.ok) {
+            window.alert("Registration success, please log in");
+            window.location.href = "login.html";
+        }
         else {
             const error = await response.text();
             window.alert(error);

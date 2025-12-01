@@ -41,9 +41,10 @@ async function searchSpecialists() {
 
 function populateSpecialists(container, array) {
     container.innerHTML = "";
-    array.forEach(specialist => {
+    
+    const selected = servicesDropdown.value;
 
-        const selected = servicesDropdown.value;
+    array.forEach(specialist => {
         const matchedService = specialist.services.find(s => s.name == selected);
 
         if (matchedService) {
