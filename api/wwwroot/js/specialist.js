@@ -34,18 +34,24 @@ schedule.addEventListener("click", async event => {
         if (response.ok) 
             window.alert("Reservation success!");
 
-        occupiedIntervals = await GetOccupiedSlots();
-        DisableOccupied(slots, occupiedIntervals);
+        occupiedIntervals = await getOccupiedSlots();
+        disableOccupied(slots, occupiedIntervals);
     } catch (e) {
         console.error(e);
     }
-})
+});
 
-function SetDefaultDate() {
+selectedDate.addEventListener("change", async event => {
+    slots.length = 0;
+    occupiedIntervals = await getOccupiedSlots();
+    populateSlots(slots, occupiedIntervals);
+});
+
+function setDefaultDate() {
     selectedDate.valueAsDate = new Date();
 }
 
-function PopulateSlots(slots, occupiedIntervals) {
+function populateSlots(slots, occupiedIntervals) {
     schedule.innerHTML = "";
     slots.length = 0;
 
@@ -74,10 +80,10 @@ function PopulateSlots(slots, occupiedIntervals) {
         curr.setMinutes(curr.getMinutes() + minuteInterval);
     }
 
-    DisableOccupied(slots, occupiedIntervals);
+    disableOccupied(slots, occupiedIntervals);
 }
 
-function DisableOccupied(slots, occupiedIntervals) {
+function disableOccupied(slots, occupiedIntervals) {
     slots.forEach(slot => {
         const date = slot.date;
         const element = slot.element;
@@ -93,13 +99,13 @@ function DisableOccupied(slots, occupiedIntervals) {
     });
 }
 
-async function SetTitle() {
+async function setTitle() {
     const specialist = await getResource(`api/specialists/${specialistId}`);
     console.log(`Specialis:  ${specialist}`);
     title.innerText = `${specialist.name}'s schedule:`
 }
 
-async function GetOccupiedSlots() {
+async function getOccupiedSlots() {
     return await getResource(
         `api/specialists/${specialistId}/occupied-slots?date=${selectedDate.value}`
     );
@@ -120,12 +126,12 @@ function formatLocalDateTime(date) {
 
 
 async function init() {
-    await SetTitle();
-    SetDefaultDate();
+    await setTitle();
+    setDefaultDate();
 
-    occupiedIntervals = await GetOccupiedSlots();
+    occupiedIntervals = await getOccupiedSlots();
 
-    PopulateSlots(slots, occupiedIntervals);
+    populateSlots(slots, occupiedIntervals);
 }
 
 init();
