@@ -17,6 +17,7 @@ public static class Seeder
     {
         if (await context.Users.AnyAsync(ct)) return; //if seeded already
 
+        Random random = new Random();
         //add a single admin user
         context.Users.Add(new User
         {
@@ -25,7 +26,7 @@ public static class Seeder
             Email = "admin@example.com"
         });
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 15; i++)
         {
             context.Users.Add(new User
             {
@@ -33,7 +34,10 @@ public static class Seeder
                 PasswordHash = Hasher.Hash($"pass{i}"),
                 Email = $"mail{i}@gmail.com"
             });
+        }
 
+        for (int i = 0; i < 3; i++)
+        {
             context.Services.Add(new Service
             {
                 Name = $"service{i}"
@@ -52,16 +56,13 @@ public static class Seeder
         var savedSalons = await context.Salons.ToListAsync(ct);
         var savedServices = await context.Services.ToListAsync(ct);
 
-        for (int i = 1; i < savedUsers.Count; i++)
+        for (int i = 2; i < savedUsers.Count-1; i++)
         {
-            if (i % 3 == 0)
+            context.Specialists.Add(new Specialist
             {
-                context.Specialists.Add(new Specialist
-                {
-                    UserId = savedUsers[i].Id,
-                    SalonId = savedSalons[i].Id
-                });
-            }
+                UserId = savedUsers[i].Id,
+                SalonId = savedSalons[random.Next(savedSalons.Count)].Id
+            });
         }
 
         //add the admnin user to admins table
@@ -71,8 +72,6 @@ public static class Seeder
         });
 
         await context.SaveChangesAsync(ct);
-
-        Random random = new Random();
 
         var specialistList = await context.Specialists.ToListAsync(ct);
 

@@ -41,7 +41,7 @@ async function searchSpecialists() {
 
 function populateSpecialists(container, array) {
     container.innerHTML = "";
-    
+
     const selected = servicesDropdown.value;
 
     array.forEach(specialist => {
@@ -56,18 +56,13 @@ function populateSpecialists(container, array) {
             card.dataset.specialistId = specialist.userId;
             card.dataset.serviceId = matchedService.id;
 
-            card.className = "card";
-            specialistsContainer.appendChild(card);
-            name.innerHTML = specialist.name;
-            card.appendChild(name);
-
-            card.className = "card";
-            specialistsContainer.appendChild(card);
             name.innerHTML = specialist.name;
             card.appendChild(name);
             service.innerHTML = `${matchedService.name}, ${matchedService.cost}`;
-
             card.appendChild(service);
+
+            card.className = "card";
+            specialistsContainer.appendChild(card);
         }
     });
 }
