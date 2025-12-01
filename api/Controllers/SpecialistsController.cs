@@ -50,7 +50,7 @@ public class SpecialistsController : ControllerBase
         //cleaned it up
         var specialistDtos = specialists.Select(s => new SpecialistGetDto 
         {
-            UserId = s.UserId,
+            Id = s.Id,
             Name = s.User.Username,
             Services = s.SpecialistServices
             .Where(ss => string.IsNullOrEmpty(serviceProvided) || ss.Service.Name == serviceProvided)
@@ -76,16 +76,15 @@ public class SpecialistsController : ControllerBase
         var result = await _context.Specialists
         .Include(s => s.User)
         .Include(s => s.Salon)
-        .FirstOrDefaultAsync(s => s.UserId == id);
+        .FirstOrDefaultAsync(s => s.Id == id);
 
         if (result == null) return NotFound();
 
         var responseUser = new SpecialistGetDto
         {
-            UserId = result.UserId,
+            Id = result.Id,
             Name = result.User.Username,
             Email = result.User.Email,
-            SalonName = result.Salon.Name
         };
 
         return Ok(responseUser);

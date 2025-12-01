@@ -22,9 +22,10 @@ public class ReservationsController : ControllerBase
     public async Task<ActionResult<Reservation>> PostReservation(ReservationCreateDto reservationDto)
     {
         var service = await _context.SpecialistServices
-        .FirstOrDefaultAsync(s =>
-        s.SpecialistId == reservationDto.SpecialistId &&
-        s.Id == reservationDto.SpecialistServiceId);
+            .FirstOrDefaultAsync(s =>
+                s.SpecialistId == reservationDto.SpecialistId &&
+                s.Id == reservationDto.SpecialistServiceId
+            );
 
         if (service == null) return NotFound("Service doesnt exist");
 

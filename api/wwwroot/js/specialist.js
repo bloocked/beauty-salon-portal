@@ -10,9 +10,10 @@ const specialistServiceId = queryString.get("specialistServiceId");
 
 const slots = [];
 let occupiedIntervals = [];
-const currentUser = getCurrentUserFromToken();
 
 schedule.addEventListener("click", async event => {
+    const currentUser = getCurrentUserFromToken();
+    
     const slot = event.target.closest(".slotBtn");
 
     if (!slot) return;
@@ -28,7 +29,9 @@ schedule.addEventListener("click", async event => {
         specialistServiceId: Number(specialistServiceId),
         clientId: Number(currentUser.nameid),        // PLACEHOLDER, WILL USE JWT DATA LATER
         startTime: formatLocalDateTime(new Date(slotDate))  // should fix incorrect post dates
-    }
+    };
+
+    console.log("Reservation object to send:", reservation);
 
     try {
         const response = await fetch("/api/reservations", {
@@ -40,6 +43,7 @@ schedule.addEventListener("click", async event => {
         body: JSON.stringify(reservation)
         })
 
+        console.log(response);
         if (response.ok) {
             window.alert("Reservation success!");
             occupiedIntervals = await getOccupiedSlots();

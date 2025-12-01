@@ -36,7 +36,7 @@ public static class Seeder
             });
         }
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 5; i++)
         {
             context.Services.Add(new Service
             {

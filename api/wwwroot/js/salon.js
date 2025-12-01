@@ -9,7 +9,7 @@ const searchForm = document.getElementById("searchForm");
 searchForm.addEventListener("submit", event => {
     event.preventDefault();
     searchSpecialists();
-})
+});
 
 specialistsContainer.addEventListener("click", event => { //event delegation is based
     event.preventDefault();
@@ -22,7 +22,7 @@ specialistsContainer.addEventListener("click", event => { //event delegation is 
     query.append("specialistServiceId", card.dataset.serviceId);
     
     window.location.href = `specialist.html?${query.toString()}`;
-})
+});
 
 async function searchSpecialists() {
     const service = servicesDropdown.value;
@@ -53,7 +53,7 @@ function populateSpecialists(container, array) {
             const name = document.createElement("h3");
             const service = document.createElement("h4");
 
-            card.dataset.specialistId = specialist.userId;
+            card.dataset.specialistId = specialist.id;
             card.dataset.serviceId = matchedService.id;
 
             name.innerHTML = specialist.name;
