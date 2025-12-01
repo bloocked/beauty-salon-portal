@@ -1,31 +1,41 @@
+import { getResource } from "./modules/utils.js";
+
 const schedule = document.getElementById("scheduleContainer");
 const selectedDate = document.getElementById("calendarDate");
+const title = document.getElementById("title");
+
+const queryString = new URLSearchParams(window.location.search);
+const specialistId = queryString.get("specialistId");
+const specialistServiceId = queryString.get("specialistServiceId");
+
+const slots = [];
+let occupiedIntervals = [];
 
 schedule.addEventListener("click", async event => {
     const slot = event.target.closest(".slotBtn");
 
     if (!slot) return;
-    const queryString = new URLSearchParams(window.location.search);
-
-    const specialistId = queryString.get("specialistId");
-    const specialistServiceId = queryString.get("specialistServiceId");
     const slotDate = slot.dataset.date;
 
     const reservation = { 
         specialistId: Number(specialistId),
         specialistServiceId: Number(specialistServiceId),
-        clientId: 2, // PLACEHOLDER, WILL USE JWT DATA LATER
-        startTime: formatLocalDateTime(new Date(slotDate)) // should fix incorrect post dates
+        clientId: 2,                                        // PLACEHOLDER, WILL USE JWT DATA LATER
+        startTime: formatLocalDateTime(new Date(slotDate))  // should fix incorrect post dates
     }
 
     try {
         const response = await fetch("/api/reservations", {
         method: "POST",
-        headers: { "Content-Type": "application/json" }, // WRAP ALL OF THIS IN A DTO LATER
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reservation)
         })
 
-        if (response.ok) window.alert("Reservation success!")
+        if (response.ok) 
+            window.alert("Reservation success!");
+
+        occupiedIntervals = await GetOccupiedSlots();
+        DisableOccupied(slots, occupiedIntervals);
     } catch (e) {
         console.error(e);
     }
@@ -35,39 +45,69 @@ function SetDefaultDate() {
     selectedDate.valueAsDate = new Date();
 }
 
-function PopulateSlots(array = []) {
+function PopulateSlots(slots, occupiedIntervals) {
     schedule.innerHTML = "";
+    slots.length = 0;
 
     const minuteInterval = 15;
     const dateToDisplay = new Date(selectedDate.value);
-    dateToDisplay.setHours(0, 0, 0, 0); // mark the start
+    dateToDisplay.setHours(8, 0, 0, 0); // start of the workday
 
     const dayEnd = new Date(dateToDisplay);
-    dayEnd.setHours(24, 0, 0, 0);
+    dayEnd.setHours(22, 0, 0, 0);       // end of the workday
 
     let curr = new Date(dateToDisplay);
 
     while (curr < dayEnd) {
-        const slotButton = document.createElement("div");
-        slotButton.className = "slotBtn";
+        const slot = document.createElement("div");
+        slot.className = "slotBtn";
 
-        const hours = curr.getHours();
-        const minutes = curr.getMinutes();
+        // padded out for clean look
+        const hours = curr.getHours().toString().padStart(2, "0");
+        const minutes = curr.getMinutes().toString().padStart(2, "0");
+        slot.textContent = `${hours}:${minutes}`;
+        schedule.appendChild(slot);
 
-        slotButton.textContent = `${hours}:${minutes}`
-
-        slotButton.dataset.date = curr.toISOString();
+        slot.dataset.date = curr.toISOString();
+        slots.push({ element: slot, date: new Date(curr) });
 
         curr.setMinutes(curr.getMinutes() + minuteInterval);
-
-        schedule.appendChild(slotButton);
     }
 
-    array.forEach(slot => {
-        // block out occupied slots
+    DisableOccupied(slots, occupiedIntervals);
+}
+
+function DisableOccupied(slots, occupiedIntervals) {
+    slots.forEach(slot => {
+        const date = slot.date;
+        const element = slot.element;
+
+        const disabled = occupiedIntervals.some(interval => {
+            const intervalStart = new Date(interval.startTime);
+            const intervalEnd = new Date(interval.endTime);
+
+            return date >= intervalStart && date < intervalEnd;
+        });
+        
+        if (disabled) element.className = "disabled";
     });
 }
- //check this for bugs
+
+async function SetTitle() {
+    const specialist = await getResource(`api/specialists/${specialistId}`);
+    console.log(`Specialis:  ${specialist}`);
+    title.innerText = `${specialist.name}'s schedule:`
+}
+
+async function GetOccupiedSlots() {
+    return await getResource(
+        `api/specialists/${specialistId}/occupied-slots?date=${selectedDate.value}`
+    );
+}
+
+ // used for converting from UTC to local time, fixes time misalignment
+ // getMonth() etc. takes UTC and turns into local time
+ // possibly a thing to look at later
 function formatLocalDateTime(date) {
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
@@ -79,5 +119,13 @@ function formatLocalDateTime(date) {
 }
 
 
-SetDefaultDate();
-PopulateSlots();
+async function init() {
+    await SetTitle();
+    SetDefaultDate();
+
+    occupiedIntervals = await GetOccupiedSlots();
+
+    PopulateSlots(slots, occupiedIntervals);
+}
+
+init();

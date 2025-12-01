@@ -93,7 +93,7 @@ public class SpecialistsController : ControllerBase
 
     [HttpGet("{specialistId}/occupied-slots")]
     public async Task<IActionResult> GetOccupiedSlots(
-        [FromQuery] int specialistId,
+        [FromRoute] int specialistId,
         [FromQuery] DateTime date)
     {
         TimeSpan interval = TimeSpan.FromMinutes(15);

@@ -17,10 +17,10 @@ specialistsContainer.addEventListener("click", event => { //event delegation is 
 
     if (!card) return;
 
-    //console.log(`Clicked specialist id: ${card.dataset.id}`);
     const query = new URLSearchParams();
     query.append("specialistId", card.dataset.specialistId);
     query.append("specialistServiceId", card.dataset.serviceId);
+    
     window.location.href = `specialist.html?${query.toString()}`;
 })
 

@@ -4,7 +4,7 @@ export async function getResource(endpoint, urlParams = "") {
     const response = await fetch(endpoint);
 
     if(!response.ok) {
-        error = await response.text();
+        const error = await response.text();
         window.alert(error);
         return [];
     }

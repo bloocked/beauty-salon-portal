@@ -3,6 +3,7 @@ using api.DTOs.Reservations;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -24,6 +25,9 @@ public class ReservationsController : ControllerBase
         s.Id == reservationDto.SpecialistServiceId);
 
         if (service == null) return NotFound("Service doesnt exist");
+
+        if (service.Duration.Minutes < 15) 
+            return BadRequest("Service duration incorrect, must be longer than 15 min");
 
         var newEndTime = reservationDto.StartTime.Add(service.Duration);
 
