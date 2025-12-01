@@ -1,6 +1,7 @@
 using api.Enums;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace api.Data;
 
@@ -27,6 +28,14 @@ public class ApiDbContext : DbContext
 
             u.HasIndex(u => u.Username)
                 .IsUnique();
+
+            u.Property(u => u.Username)
+                .HasColumnType("TEXT")
+                .HasMaxLength(50);
+
+            u.Property(u => u.Email)
+                .HasColumnType("TEXT")
+                .HasMaxLength(100);
         });
 
         modelBuilder.Entity<Salon>(s =>
@@ -38,13 +47,27 @@ public class ApiDbContext : DbContext
                 .IsUnique();
 
             s.Property(s => s.City)
-                .HasConversion<string>();
+                .HasConversion<string>()
+                .HasColumnType("TEXT")
+                .HasMaxLength(50);
+
+            s.Property(s => s.Name)
+                .HasColumnType("TEXT")
+                .HasMaxLength(100);
+
+            s.Property(s => s.Address)
+                .HasColumnType("TEXT")
+                .HasMaxLength(200);
         });
 
         modelBuilder.Entity<Service>(s =>
         {
             s.HasIndex(s => s.Name)
                 .IsUnique();
+
+            s.Property(s => s.Name)
+                .HasColumnType("TEXT")
+                .HasMaxLength(100);
         });
 
         modelBuilder.Entity<Specialist>(s =>
@@ -60,6 +83,9 @@ public class ApiDbContext : DbContext
 
         modelBuilder.Entity<SpecialistService>(s =>
         {
+            s.HasIndex(ss => new { ss.SpecialistId, ss.ServiceId })
+                .IsUnique();
+
             s.HasOne(ss => ss.Service)
                 .WithMany(s => s.SpecialistServices)
                 .HasForeignKey(ss => ss.ServiceId);
@@ -67,6 +93,12 @@ public class ApiDbContext : DbContext
             s.HasOne(ss => ss.Specialist)
                 .WithMany(s => s.SpecialistServices)
                 .HasForeignKey(ss => ss.SpecialistId);
+
+            s.Property(ss => ss.Cost)
+                .HasColumnType("NUMERIC(10,2)");
+
+            s.Property(ss => ss.Duration)
+                .HasColumnType("TEXT");
         });
 
        modelBuilder.Entity<Reservation>(r =>
@@ -81,6 +113,19 @@ public class ApiDbContext : DbContext
             r.HasOne(r => r.Client)
                 .WithMany(c => c.Reservations)
                 .HasForeignKey(r => r.ClientId);
+
+            r.Property(r => r.StartTime)
+                .HasColumnType("TEXT");
+
+            r.Property(r => r.EndTime)
+                .HasColumnType("TEXT");
+       });
+
+       modelBuilder.Entity<Admin>(a =>
+       {
+            a.HasOne(a => a.User)
+                .WithOne(u => u.Admin)
+                .HasForeignKey<Admin>(a => a.UserId);
        });
     }
 }

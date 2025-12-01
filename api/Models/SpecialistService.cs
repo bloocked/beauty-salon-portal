@@ -5,7 +5,7 @@ public class SpecialistService
     public int Id { get; set; }
     public int SpecialistId { get; set; }
     public int ServiceId { get; set; }
-    public required double Cost { get; set; }
+    public required decimal Cost { get; set; }
     public required TimeSpan Duration { get; set; }
 
     // navigation properties
