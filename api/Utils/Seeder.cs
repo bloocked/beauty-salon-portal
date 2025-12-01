@@ -85,7 +85,7 @@ public static class Seeder
                 {
                     SpecialistId = s.Id,
                     ServiceId = service.Id,
-                    Cost = (decimal) random.NextDouble() * 100,
+                    Cost = (decimal) Math.Round(random.NextDouble() * 100, 2),
                     Duration = TimeSpan.FromMinutes(random.NextInt64(1, 6) * 15)
                 });
             }
