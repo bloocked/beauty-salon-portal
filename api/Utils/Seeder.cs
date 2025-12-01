@@ -17,6 +17,14 @@ public static class Seeder
     {
         if (await context.Users.AnyAsync(ct)) return; //if seeded already
 
+        //add a single admin user
+        context.Users.Add(new User
+        {
+            Username = "admin",
+            PasswordHash = Hasher.Hash("admin"),
+            Email = "admin@example.com"
+        });
+
         for (int i = 0; i < 10; i++)
         {
             context.Users.Add(new User
@@ -44,7 +52,7 @@ public static class Seeder
         var savedSalons = await context.Salons.ToListAsync(ct);
         var savedServices = await context.Services.ToListAsync(ct);
 
-        for (int i = 0; i < savedUsers.Count; i++)
+        for (int i = 1; i < savedUsers.Count; i++)
         {
             if (i % 3 == 0)
             {
@@ -55,6 +63,12 @@ public static class Seeder
                 });
             }
         }
+
+        //add the admnin user to admins table
+        context.Admins.Add(new Admin
+        {
+            UserId = savedUsers.First(u => u.Username == "admin").Id
+        });
 
         await context.SaveChangesAsync(ct);
 

@@ -24,8 +24,10 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(
-            u => u.Username == loginDto.Username);
+        var user = await _context.Users
+        .Include(u => u.Admin)
+        .Include(u => u.Specialist)
+        .FirstOrDefaultAsync(u => u.Username == loginDto.Username);
 
         if (user == null) return Unauthorized("Username does not exist");
 

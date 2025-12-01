@@ -28,8 +28,6 @@ async function auth() {
             window.alert("Login success");
             window.location.href = "index.html";
         }
-
-        else console.log(data); // maybe make it cleaner later, ugly oneline
     } catch (e) {
         console.error(e);
     }

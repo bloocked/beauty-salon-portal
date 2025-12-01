@@ -13,6 +13,7 @@ public class ApiDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Salon> Salons { get; set; }
     public DbSet<Specialist> Specialists { get; set; }
+    public DbSet<Admin> Admins { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<SpecialistService> SpecialistServices { get; set; }
     public DbSet<Reservation> Reservations { get; set; }

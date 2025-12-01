@@ -1,7 +1,9 @@
 //refactor, look into adding helpers like an apiGet with error handling
-export async function getResource(endpoint, urlParams = "") {
+export async function getResource(endpoint, BearerToken = null) {
     try {
-    const response = await fetch(endpoint);
+    const response = await fetch(endpoint, {
+        headers: { "Authorization": BearerToken ? `Bearer ${BearerToken}` : "" }
+    });
 
     if(!response.ok) {
         const error = await response.text();

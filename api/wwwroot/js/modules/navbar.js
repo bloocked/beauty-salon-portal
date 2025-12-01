@@ -24,27 +24,26 @@ async function renderNavbar() {
 
     if (user && user.role === "Admin") {
         html += `
-                <li><a href="admin.html">Admin Panel</a></li>
-            </ul>
-        </nav>
+            <li><a href="admin-panel.html">Admin Panel</a></li>
+            <li><a href="#" id="logoutBtn">Logout</a></li>
         `;
     }
     else if (user) {
         html += `
-                <li><a href="#" id="logoutBtn">Logout</a></li>
-            </ul>
-        </nav>
+            <li><a href="#" id="logoutBtn">Logout</a></li>
+
         `;
     }
     else {
         html += `
-                <li><a href="register.html">Register</a></li>
-                <li><a href="login.html">Login</a></li>
-            </ul>
-        </nav>
+            <li><a href="register.html">Register</a></li>
+            <li><a href="login.html">Login</a></li>
         `;
     }
-
+    html += `
+      </ul>
+    </nav>
+    `;
 
     navbar.innerHTML = html;
 }
