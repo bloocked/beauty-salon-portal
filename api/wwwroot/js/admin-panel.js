@@ -15,12 +15,12 @@ const users = await getResource("/api/users", localStorage.getItem("jwt"));
 
 function populateUsers(container, array) {
     let html = `
-        <table>
-            <thead>
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
                 </tr>
             </thead>
             <tbody>

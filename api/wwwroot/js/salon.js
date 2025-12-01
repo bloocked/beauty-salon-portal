@@ -48,21 +48,27 @@ function populateSpecialists(container, array) {
         const matchedService = specialist.services.find(s => s.name == selected);
 
         if (matchedService) {
-
             const card = document.createElement("div");
-            const name = document.createElement("h3");
-            const service = document.createElement("h4");
+            const body = document.createElement("div");
+            const name = document.createElement("h5");
+            const service = document.createElement("p");
 
             card.dataset.specialistId = specialist.id;
             card.dataset.serviceId = matchedService.id;
 
-            name.innerHTML = specialist.name;
-            card.appendChild(name);
-            service.innerHTML = `${matchedService.name}, ${matchedService.cost}`;
-            card.appendChild(service);
-
-            card.className = "card";
+            card.className = "card h-100 col";
             specialistsContainer.appendChild(card);
+
+            body.className = "card-body";
+            card.appendChild(body);
+
+            name.className = "card-title mb-2";
+            name.textContent = specialist.name;
+            body.appendChild(name);
+
+            service.className = "card-text text-body-secondary mb-0";
+            service.textContent = `${matchedService.name}, ${matchedService.cost}`;
+            body.appendChild(service);
         }
     });
 }

@@ -33,17 +33,25 @@ function populateSalons(container, array) {
     container.innerHTML = "";
     array.forEach(salon => {
         const card = document.createElement("div");
-        const name = document.createElement("h3");
-        const fullAddress = document.createElement("h4");
+        const body = document.createElement("div");
+        const name = document.createElement("h5");
+        const fullAddress = document.createElement("p");
 
         card.dataset.id = salon.id;
 
-        card.className = "card";
+        card.className = "card h-100 col";
         salonsContainer.appendChild(card);
-        name.innerHTML = salon.name;
-        card.appendChild(name);
-        fullAddress.innerHTML = `${salon.address}, ${salon.city}`;
-        card.appendChild(fullAddress);
+
+        body.className = "card-body";
+        card.appendChild(body);
+
+        name.className = "card-title mb-2";
+        name.textContent = salon.name;
+        body.appendChild(name);
+
+        fullAddress.className = "card-text text-body-secondary mb-0";
+        fullAddress.textContent = `${salon.address}, ${salon.city}`;
+        body.appendChild(fullAddress);
     });
 }
 

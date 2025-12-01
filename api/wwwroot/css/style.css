@@ -1,0 +1,59 @@
+#scheduleContainer {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+    align-items: stretch;
+    margin: 12px 0;
+}
+
+.slotBtn {
+    border: 1px solid var(--bs-border-color, #cfcfcf);
+    padding: 12px 8px;
+    font-size: 1.05rem; /* slightly larger text */
+    text-align: center;
+    border-radius: .5rem;
+    background: var(--bs-body-bg, #ffffff);
+    cursor: pointer;
+    user-select: none;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#scheduleContainer .disabled {
+    border: 1px solid var(--bs-border-color, #cfcfcf);
+    padding: 12px 8px;
+    font-size: 1.05rem;
+    text-align: center;
+    border-radius: .5rem;
+    background: #6d6c6c;
+    color: #fff;
+    cursor: not-allowed;
+    user-select: none;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* hover / active states */
+.slotBtn:hover {
+    border-color: var(--bs-secondary-border-subtle, #bdbdbd);
+    background: var(--bs-tertiary-bg, #f8f9fa);
+}
+.slotBtn:active {
+    transform: translateY(1px);
+}
+
+/* responsive: fewer columns on small screens */
+@media (max-width: 900px) {
+    #scheduleContainer { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 480px) {
+    #scheduleContainer { grid-template-columns: repeat(2, 1fr); }
+    .slotBtn { font-size: 1rem; padding: 10px 6px; }
+}
+
+/* Provide some padding to JS-generated cards (no .card-body used) */
+.card { padding: 1rem; }

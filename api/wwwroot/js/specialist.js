@@ -81,10 +81,10 @@ function populateSlots(slots, occupiedIntervals) {
     let curr = new Date(dateToDisplay);
 
     while (curr < dayEnd) {
-        const slot = document.createElement("div");
-        slot.className = "slotBtn";
+        const slot = document.createElement("button");
+        slot.type = "button";
+        slot.className = "slotBtn btn btn-outline-secondary col py-2";
 
-        // padded out for clean look
         const hours = curr.getHours().toString().padStart(2, "0");
         const minutes = curr.getMinutes().toString().padStart(2, "0");
         slot.textContent = `${hours}:${minutes}`;
@@ -110,8 +110,16 @@ function disableOccupied(slots, occupiedIntervals) {
 
             return date >= intervalStart && date < intervalEnd;
         });
-        
-        if (disabled) element.className = "disabled";
+
+        if (disabled) {
+            element.classList.remove("btn-outline-secondary");
+            element.classList.add("btn-secondary");
+            element.setAttribute("disabled", "disabled");
+        } else {
+            element.classList.add("btn-outline-secondary");
+            element.classList.remove("btn-secondary");
+            element.removeAttribute("disabled");
+        }
     });
 }
 
