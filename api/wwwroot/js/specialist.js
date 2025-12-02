@@ -1,4 +1,4 @@
-import { getResource, getCurrentUserFromToken } from "./modules/utils.js";
+import { getResource, getUserFromValidToken } from "./modules/utils.js";
 
 const schedule = document.getElementById("scheduleContainer");
 const selectedDate = document.getElementById("calendarDate");
@@ -12,7 +12,7 @@ const slots = [];
 let occupiedIntervals = [];
 
 schedule.addEventListener("click", async event => {
-    const currentUser = getCurrentUserFromToken();
+    const currentUser = getUserFromValidToken();
     
     const slot = event.target.closest(".slotBtn");
 

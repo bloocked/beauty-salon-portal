@@ -1,6 +1,6 @@
-import { getCurrentUserFromToken, getResource } from "./modules/utils.js";
+import { getUserFromValidToken, getResource } from "./modules/utils.js";
 
-const user = getCurrentUserFromToken();
+const user = getUserFromValidToken();
 
 // prevent unauthorized access
 if (!user || user.role !== "Admin") {

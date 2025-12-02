@@ -22,14 +22,22 @@ export async function getResource(endpoint, BearerToken = null) {
     }
 }
 
-export function getCurrentUserFromToken() {
+export function getUserFromValidToken() {
     const token = localStorage.getItem("jwt");
     if (!token) return null;
 
-    return jwt_decode(token);
+    const decoded = jwt_decode(token);
+    const currentTime = Date.now() / 1000;
+
+    if (decoded.exp < currentTime) {
+        localStorage.removeItem("jwt");
+        logout();
+        return null;
+    }
+    return decoded;
 }
 
 export function logout() {
     localStorage.removeItem("jwt");
-    window.location.href = "#";
+    window.location.href = "index.html";
 }

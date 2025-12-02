@@ -20,14 +20,16 @@ async function auth() {
         body: JSON.stringify(user)
         });
 
-        const data = await response.json();
-
         if (response.ok) {
+            const data = await response.json();
+
             localStorage.setItem("jwt", data.token);
 
             window.alert("Login success");
             window.location.href = "index.html";
         }
+        else 
+            window.alert("Login failed. Please check your credentials and try again.");
     } catch (e) {
         console.error(e);
     }

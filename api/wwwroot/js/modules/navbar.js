@@ -1,4 +1,4 @@
-import { getCurrentUserFromToken, logout } from "./utils.js";
+import { getUserFromValidToken, logout } from "./utils.js";
 
 const navbar = document.getElementById("navbar");
 
@@ -13,7 +13,7 @@ navbar?.addEventListener("click", event => {
 async function renderNavbar() {
     if (!navbar) return;
 
-    const user = getCurrentUserFromToken();
+    const user = getUserFromValidToken();
 
     let rightItems = "";
 

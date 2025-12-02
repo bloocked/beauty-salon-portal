@@ -1,4 +1,4 @@
-import { getResource } from "./modules/utils.js";
+import { getResource, getUserFromValidToken } from "./modules/utils.js";
 import { populateCities, populateServices } from "./modules/dropdown.js";
 
 const cityDropDown = document.getElementById("cities");
@@ -74,6 +74,7 @@ async function searchSalons() {
 
 //not sure if this is needed but saw a recommendation
 async function init() {
+    getUserFromValidToken(); // prevent lingering trash tokens
     const services = await getResource("api/services");
     const salons = await getResource("api/salons");
 
