@@ -21,7 +21,6 @@ salonsContainer.addEventListener("click", event =>{
     const card = event.target.closest(".card");
 
     const salonId = card.dataset.id;
-    window.alert(salonId);
 
     const query = new URLSearchParams();
     query.append("salonId", salonId);
