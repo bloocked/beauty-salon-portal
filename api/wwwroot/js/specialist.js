@@ -123,10 +123,13 @@ function disableOccupied(slots, occupiedIntervals) {
     });
 }
 
-async function setTitle() {
+async function setInfoTitle() {
     const specialist = await getResource(`api/specialists/${specialistId}`);
+    const service = specialist.services.find(s => s.id == specialistServiceId);
     console.log(`Specialis:  ${specialist}`);
-    title.innerText = `${specialist.name}'s schedule:`
+    console.log(`Service:  ${service}`);
+    title.innerHTML = `<h1>${specialist.name}'s schedule:</h1>
+                        <h3>Service: ${service.name}, ${service.duration}</h3>`;
 }
 
 async function getOccupiedSlots() {
@@ -150,7 +153,7 @@ function formatLocalDateTime(date) {
 
 
 async function init() {
-    await setTitle();
+    await setInfoTitle();
     setDefaultDate();
 
     occupiedIntervals = await getOccupiedSlots();

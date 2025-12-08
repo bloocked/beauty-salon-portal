@@ -21,11 +21,13 @@ public class SpecialistsController : ControllerBase
         _context = context;
     }
 
+    // TODO, Look into the randomness that is the get all endpoint using service name and get singular using service id
+
     // GET: api/specialists
     [HttpGet]
     public async Task<ActionResult<List<Specialist>>> GetSpecialists(
         [FromQuery] int? salonId,
-        [FromQuery] string? serviceProvided)
+        [FromQuery] string? serviceName)
     {
         var query = _context.Specialists
         .Include(s => s.User)
@@ -38,11 +40,11 @@ public class SpecialistsController : ControllerBase
             query = query.Where(s => s.SalonId == salonId);
         }
 
-        if (!string.IsNullOrEmpty(serviceProvided))
+        if (!string.IsNullOrEmpty(serviceName))
         {
             query = query.Where(specialist =>
                 specialist.SpecialistServices.Any(sService =>
-                    sService.Service.Name == serviceProvided));
+                    sService.Service.Name == serviceName));
         }
 
         var specialists = await query.ToListAsync();
@@ -52,8 +54,9 @@ public class SpecialistsController : ControllerBase
         {
             Id = s.Id,
             Name = s.User.Username,
+            Email = s.User.Email,
             Services = s.SpecialistServices
-            .Where(ss => string.IsNullOrEmpty(serviceProvided) || ss.Service.Name == serviceProvided)
+            .Where(ss => string.IsNullOrEmpty(serviceName) || ss.Service.Name == serviceName)
             .Select(ss => new SpecialistServiceGetDto
             {
                 Id = ss.Id,
@@ -75,6 +78,8 @@ public class SpecialistsController : ControllerBase
     {
         var result = await _context.Specialists
         .Include(s => s.User)
+        .Include(s => s.SpecialistServices)
+        .ThenInclude(ss => ss.Service)
         .Include(s => s.Salon)
         .FirstOrDefaultAsync(s => s.Id == id);
 
@@ -85,6 +90,13 @@ public class SpecialistsController : ControllerBase
             Id = result.Id,
             Name = result.User.Username,
             Email = result.User.Email,
+            Services = result.SpecialistServices.Select(ss => new SpecialistServiceGetDto
+            {
+                Id = ss.Id,
+                Name = ss.Service.Name,
+                Cost = ss.Cost,
+                Duration = ss.Duration
+            }).ToList()
         };
 
         return Ok(responseUser);
